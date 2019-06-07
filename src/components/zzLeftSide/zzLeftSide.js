@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {Layout, Icon, Menu} from 'antd';
 import {Scrollbars} from 'react-custom-scrollbars';
 import find from 'lodash/find';
-import {admin, hotelkeeperAdmin, travelkeeperAdmin, foodkeeperAdmin} from './authority';
+import {admin} from './authority';
 import menuTree from './menu';
 import './zzLeftSide.less';
 

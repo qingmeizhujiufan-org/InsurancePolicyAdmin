@@ -4,11 +4,11 @@ const Menu = [{
     label: '业务员管理',
     children: [{
         key: '000_1',
-        link: '/frame/staff/list',
+        link: '/frame/user/list',
         label: '业务员列表'
     }, {
         key: '000_2',
-        link: '/frame/staff/detail',
+        link: '/frame/user/detail',
         label: '业务员详情'
     }]
 }, {

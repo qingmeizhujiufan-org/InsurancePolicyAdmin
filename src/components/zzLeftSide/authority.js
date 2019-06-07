@@ -1,5 +1,5 @@
 const admin = {
-    defaultOpenKeys: ['000', '001', '002', '003'],
+    defaultOpenKeys: ['000'],
     defaultSelectedKeys: ['000_1'],
     menu: [
         {
