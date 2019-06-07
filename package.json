@@ -1,5 +1,5 @@
 {
-    "name": "OrderManagement",
+    "name": "insurance-policy-admin",
     "version": "1.0.0",
     "main": "lib/index",
     "scripts": {
