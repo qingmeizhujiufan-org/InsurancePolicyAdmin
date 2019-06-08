@@ -286,16 +286,16 @@ class Index extends React.Component {
                 <div className='pageHeader'>
                     <div className="breadcrumb-block">
                         <Breadcrumb>
-                            <Breadcrumb.Item>业务员管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>业务员列表</Breadcrumb.Item>
+                            <Breadcrumb.Item>客户管理</Breadcrumb.Item>
+                            <Breadcrumb.Item>客户列表</Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
-                    <h1 className='title'>业务员列表</h1>
+                    <h1 className='title'>客户列表</h1>
                     <div className='search-area'>
                         <Row type='flex' justify="center" align="middle">
                             <Col span={8}>
                                 <Search
-                                    placeholder="搜索业务员姓名/手机号码"
+                                    placeholder="搜索客户姓名/手机号码"
                                     enterButton='搜索'
                                     size="large"
                                     onSearch={this.onSearch}

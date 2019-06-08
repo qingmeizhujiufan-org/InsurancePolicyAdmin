@@ -5,30 +5,25 @@ import Loading from './loading';
 
 import App from '../modules/App';
 
-/* 用户管理 */
+/* 客户管理 */
 const ProductList = Loadable({
-    loader: () => import("../modules/product/component/productList"),
-    loading: Loading
-});
-const ProductDetail = Loadable({
-    loader: () => import("../modules/product/component/productDetail"),
+    loader: () => import("../modules/client/component/clientList"),
     loading: Loading
 });
 const ProductEdit = Loadable({
-    loader: () => import("../modules/product/component/productEdit"),
+    loader: () => import("../modules/client/component/clientEdit"),
     loading: Loading
 });
 const ProductAdd = Loadable({
-    loader: () => import("../modules/product/component/productAdd"),
+    loader: () => import("../modules/client/component/clientAdd"),
     loading: Loading
 });
 
 module.exports = (
-    <Route path="product" component={App}>
+    <Route path="client" component={App}>
         <IndexRoute component={ProductList}/>
         <Route path="list" component={ProductList}/>
         <Route path="add" component={ProductAdd}/>
-        <Route path="list/detail/:id" component={ProductDetail}/>
         <Route path="list/edit/:id" component={ProductEdit}/>
     </Route>
 );

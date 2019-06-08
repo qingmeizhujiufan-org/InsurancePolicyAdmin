@@ -5,8 +5,9 @@ import Loading from './loading';
 
 /* 引入模块路由 */
 
-import UserRoute from './userRoute';
-import productRoute from './productRoute';
+import userRoute from './userRoute';
+import clientRoute from './clientRoute';
+import insuranceCompanyRoute from './insuranceCompanyRoute';
 
 const App = Loadable({
     loader: () => import('../modules/App'),
@@ -56,12 +57,11 @@ class PageRouter extends React.Component {
                     <IndexRoute component={Login}/>
                     <Route path="login" component={Login}/>
                     <Route path="frame(/*)" component={Frame} onEnter={requireAuth}>
-                        {/* <IndexRoute component={UserRoute}/> */}
-                        {UserRoute}
-                        {productRoute}
+                        {userRoute}
+                        {clientRoute}
+                        {insuranceCompanyRoute}
                         <Route path="setting" component={App}>
                             <IndexRoute component={SettingList}/>
-                            <Route path="list" component={SettingList}/>
                         </Route>
                     </Route>
                 </Route>

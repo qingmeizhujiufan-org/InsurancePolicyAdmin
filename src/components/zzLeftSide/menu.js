@@ -6,32 +6,32 @@ const Menu = [{
         key: '000_1',
         link: '/frame/user/list',
         label: '业务员列表'
-    }, {
-        key: '000_2',
-        link: '/frame/user/detail',
-        label: '业务员详情'
     }]
 }, {
     key: '001',
     iconType: 'setting',
-    label: '客户录入',
+    label: '客户管理',
     children: [{
         key: '001_1',
-        link: '/frame/custom/add',
-        label: '个人中心'
+        link: '/frame/client/list',
+        label: '客户列表'
+    }, {
+        key: '001_2',
+        link: '/frame/client/add',
+        label: '新增客户'
     }]
 }, {
     key: '002',
     iconType: 'idcard',
-    label: '产品管理',
+    label: '业务数据管理',
     children: [{
         key: '002_1',
-        link: '/frame/product/list',
-        label: '产品列表'
+        link: '/frame/insurancecompany/list',
+        label: '保险公司列表'
     }, {
         key: '002_2',
-        link: '/frame/product/add',
-        label: '新增产品'
+        link: '/frame/insurancecompany/add',
+        label: '新增保险公司'
     }]
 }, {
     key: '003',
@@ -39,7 +39,7 @@ const Menu = [{
     label: '个人设置',
     children: [{
         key: '003_1',
-        link: '/frame/setting/center',
+        link: '/frame/setting',
         label: '个人中心'
     }]
 }];

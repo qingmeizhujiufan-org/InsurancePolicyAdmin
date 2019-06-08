@@ -4,10 +4,10 @@ const admin = {
     menu: [
         {
             key: '000',
-            children: ['000_1', '000_2']
+            children: ['000_1']
         }, {
             key: '001',
-            children: ['001_1']
+            children: ['001_1', '001_2']
         }, {
             key: '002',
             children: ['002_1', '002_2']
