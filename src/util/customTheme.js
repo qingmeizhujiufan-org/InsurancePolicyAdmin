@@ -2,14 +2,14 @@
 const options = {
     modifyVars: {
         // 主题颜色
-        '@primary-color': '#5578DC',
+        '@primary-color': '#2B8BFF',
         // 链接颜色
-        '@link-color': '#5578DC',
+        '@link-color': '#2B8BFF',
         // 圆角
         '@border-radius-base': '2px',
         // 布局
         '@layout-header-height': '50px',
-        '@layout-header-background': '#5578DC',
+        '@layout-header-background': '#2B8BFF',
         '@layout-sider-background': '#fff',
         // 菜单
         '@menu-dark-bg': '#303A5E',

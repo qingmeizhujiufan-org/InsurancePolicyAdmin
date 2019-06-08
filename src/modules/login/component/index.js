@@ -3,14 +3,13 @@ import PropTypes from 'prop-types';
 import {Form, Icon, Row, Col, Input, Button, message} from 'antd';
 import restUrl from 'RestUrl';
 import axios from 'Utils/axios';
-import '../login.less';
+import '../index.less';
 
 import loginBg from 'Img/login-bg.jpg';
-import Logo from 'Img/logo.png';
 
 const FormItem = Form.Item;
 
-class Login extends React.Component {
+class Index extends React.Component {
     constructor(props) {
         super(props);
 
@@ -30,17 +29,14 @@ class Login extends React.Component {
                 this.setState({
                     loading: true
                 });
-                axios.post('admin/login', JSON.stringify(values)).then(res => {
-                    console.log('res cookie == ', res.headers);
-                    return res.data;
-                }).then(data => {
+                axios.post('admin/login', JSON.stringify(values)).then(res => res.data).then(data => {
                     if (data.success) {
                         const backData = data.backData;
 
                         sessionStorage.setItem('userId', backData.id);
                         sessionStorage.setItem('userName', backData.userName);
                         sessionStorage.setItem('realName', backData.realName);
-                        if(backData.File){
+                        if (backData.File) {
                             sessionStorage.setItem('avatar', restUrl.FILE_ASSET + `${backData.File.id + backData.File.fileType}`);
                         }
 
@@ -74,7 +70,7 @@ class Login extends React.Component {
                                 <Icon type="windows" theme='filled' style={{fontSize: 90, color: '#fff'}}/>
                             </div>
                             <div
-                                style={{paddingTop: 30, textAlign: 'center', fontSize: 20, color: '#fff'}}>无介商城管理系统
+                                style={{paddingTop: 30, textAlign: 'center', fontSize: 20, color: '#fff'}}>保险平台管理系统
                             </div>
                         </Col>
                         <Col span={11} style={{height: '400px', padding: '20px 35px', backgroundColor: '#fff'}}>
@@ -117,9 +113,9 @@ class Login extends React.Component {
     }
 }
 
-const WrappedLogin = Form.create()(Login);
+const WrappedLogin = Form.create()(Index);
 
-Login.contextTypes = {
+Index.contextTypes = {
     router: PropTypes.object
 }
 

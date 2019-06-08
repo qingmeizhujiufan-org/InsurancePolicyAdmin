@@ -16,8 +16,7 @@ import {
     Input,
     Modal
 } from 'antd';
-import {ZZCard, ZZTable} from 'Comps/zz-antD';
-import util from "Utils/util";
+import {Table, Card} from 'zui';
 import assign from 'lodash/assign';
 import find from 'lodash/find';
 import axios from "Utils/axios";
@@ -31,11 +30,11 @@ class Index extends React.Component {
 
         this.columns = [
             {
-                title: '用户名',
+                title: '昵称',
                 width: 200,
                 align: 'center',
-                dataIndex: 'userName',
-                key: 'userName',
+                dataIndex: 'nickname',
+                key: 'nickname',
                 render: (text, record, index) => (
                     <Link to={this.onDetail(record.id)}>{text}</Link>
                 )
@@ -43,24 +42,20 @@ class Index extends React.Component {
                 title: '真实姓名',
                 width: 200,
                 align: 'center',
-                dataIndex: 'realName',
-                key: 'realName',
+                dataIndex: 'realname',
+                key: 'realname',
             }, {
                 title: '个人手机号',
                 width: 150,
                 align: 'center',
-                dataIndex: 'phone',
-                key: 'phone',
+                dataIndex: 'telephone',
+                key: 'telephone',
             }, {
-                title: '角色',
-                width: 120,
+                title: '生日',
+                width: 150,
                 align: 'center',
-                dataIndex: 'roleId',
-                key: 'roleId',
-                render: (text, record, index) => {
-                    let role = find(this.state.roleList, {id: text});
-                    return (<span>{role ? role.name : null}</span>)
-                }
+                dataIndex: 'birthday',
+                key: 'birthday',
             }, {
                 title: '是否冻结',
                 width: 120,
@@ -140,14 +135,14 @@ class Index extends React.Component {
     }
 
     componentDidMount = () => {
-        this.queryRole(this.queryList);
+        this.queryList();
     }
 
     queryList = () => {
         const {params, keyWords} = this.state;
         const param = assign({}, params, {keyWords});
         this.setState({loading: true});
-        axios.get('admin/queryList', {
+        axios.get('user/queryList', {
             params: param
         }).then(res => res.data).then(data => {
             if (data.success) {
@@ -169,35 +164,9 @@ class Index extends React.Component {
                     });
                 }
             } else {
-                Message.error('查询列表失败');
+                message.error('查询列表失败');
             }
             this.setState({loading: false});
-        });
-    }
-
-    //查询角色列表
-    queryRole = callback => {
-        this.setState({roleLoading: true});
-        axios.get('role/queryList').then(res => res.data).then(data => {
-            if (data.success) {
-                let content = data.backData;
-                let roleList = [];
-                content.map(item => {
-                    roleList.push({
-                        id: item.roleId,
-                        name: item.roleName
-                    });
-                });
-
-                this.setState({
-                    roleList,
-                    roleLoading: false
-                }, () => {
-                    if (typeof callback === 'function') callback();
-                });
-            } else {
-                message.error(data.backMsg);
-            }
         });
     }
 
@@ -350,8 +319,8 @@ class Index extends React.Component {
                     </div>
                 </div>
                 <div className='pageContent'>
-                    <ZZCard>
-                        <ZZTable
+                    <Card>
+                        <Table
                             columns={this.columns}
                             dataSource={dataSource}
                             pagination={pagination}
@@ -359,7 +328,7 @@ class Index extends React.Component {
                             scroll={{x: 1500}}
                             handlePageChange={this.handlePageChange.bind(this)}
                         />
-                    </ZZCard>
+                    </Card>
                 </div>
             </div>
         );

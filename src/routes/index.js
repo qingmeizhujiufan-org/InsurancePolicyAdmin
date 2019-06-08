@@ -19,7 +19,7 @@ const Frame = Loadable({
 
 /* 登录 */
 const Login = Loadable({
-    loader: () => import('../modules/login/component/login'),
+    loader: () => import('../modules/login/component/index'),
     loading: Loading
 });
 
