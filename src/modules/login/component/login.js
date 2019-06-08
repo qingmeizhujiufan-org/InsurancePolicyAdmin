@@ -44,12 +44,8 @@ class Login extends React.Component {
                             sessionStorage.setItem('avatar', restUrl.FILE_ASSET + `${backData.File.id + backData.File.fileType}`);
                         }
 
-                        let initUrl = null;
-                        // 管理员
-                        if (backData.roleId === '000') {
-                            initUrl = '/frame/user/list';
-                        }
-                        
+                        let initUrl = '/frame/user/list';
+
                         sessionStorage.setItem('type', backData.roleId);
                         const back_url = window.location.href.split('back_url=')[1];
                         initUrl = back_url && back_url.split('#')[1] || initUrl;

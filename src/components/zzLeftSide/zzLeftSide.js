@@ -3,7 +3,7 @@ import {Link} from 'react-router';
 import PropTypes from 'prop-types';
 import {Layout, Icon, Menu} from 'antd';
 import {Scrollbars} from 'react-custom-scrollbars';
-import find from 'lodash/find';
+import _find from 'lodash/find';
 import {admin} from './authority';
 import menuTree from './menu';
 import './zzLeftSide.less';
@@ -45,9 +45,7 @@ class ZZLeftSide extends React.Component {
         if (sessionStorage.type !== undefined && sessionStorage.type !== null) {
             const type = sessionStorage.type;
             let authority, authority_menu = [];
-            if (type === "000") {
-                authority = admin;
-            } 
+            authority = admin;
             authority_menu = authority.menu;
 
             let _menu = [];
@@ -60,7 +58,7 @@ class ZZLeftSide extends React.Component {
                         _item.label = item.label;
                         _item.children = [];
                         authority_menu[i].children.map(sub_key => {
-                            _item.children.push(find(item.children, {key: sub_key}));
+                            _item.children.push(_find(item.children, {key: sub_key}));
                         });
                         _menu.push(_item);
                     }

@@ -1,5 +1,5 @@
 const admin = {
-    defaultOpenKeys: ['000'],
+    defaultOpenKeys: ['000', '001', '002', '003'],
     defaultSelectedKeys: ['000_1'],
     menu: [
         {
@@ -7,7 +7,7 @@ const admin = {
             children: ['000_1', '000_2']
         }, {
             key: '001',
-            children: ['001_1', '001_2']
+            children: ['001_1']
         }, {
             key: '002',
             children: ['002_1', '002_2']
