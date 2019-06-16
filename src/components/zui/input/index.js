@@ -3,7 +3,7 @@
  */
 import React, {Component} from 'react';
 import {Input} from 'antd';
-import {shiftThousands} from 'Utils/util';
+import {shiftThousands} from 'Utils/utils';
 import _isFunction from 'lodash/isFunction';
 
 class Index extends Component {

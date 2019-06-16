@@ -5,7 +5,7 @@ import InputNumber from './input-number';
 import Card from './card/';
 import Table from './table/';
 
-module.exports = {
+export {
     DatePicker,
     Upload,
     Editor,

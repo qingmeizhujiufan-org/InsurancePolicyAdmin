@@ -1,10 +1,10 @@
 import React from 'react';
-import restUrl from 'RestUrl';
 import _isFunction from 'lodash/isFunction';
 import './index.less';
 import {EditorState} from 'draft-js';
 import {Editor} from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import host from 'host';
 
 class Index extends React.Component {
     constructor(props) {
@@ -27,7 +27,7 @@ class Index extends React.Component {
         return new Promise(
             (resolve, reject) => {
                 const xhr = new XMLHttpRequest();
-                xhr.open('POST', restUrl.UPLOAD);
+                xhr.open('POST', host.UPLOAD);
                 const data = new FormData();
                 data.append('file', file);
                 xhr.send(data);

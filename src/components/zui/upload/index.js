@@ -5,9 +5,9 @@ import React, {Component} from 'react';
 import {Icon, Upload} from 'antd';
 import _isFunction from 'lodash/isFunction';
 import _isArray from 'lodash/isArray';
-import restUrl from "RestUrl";
+import host from 'host';
 
-const uploadUrl = restUrl.FILE_UPLOAD_HOST + 'file/upload';
+const uploadUrl = host.FILE_UPLOAD_HOST + 'file/upload';
 
 class Index extends Component {
     constructor(props) {
