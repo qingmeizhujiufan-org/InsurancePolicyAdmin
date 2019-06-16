@@ -1,21 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import {Layout, Row, Icon, Dropdown, Menu, Avatar, notification, Divider} from 'antd';
+import {connect} from "dva";
+import {Layout, Row, Icon, Dropdown, Menu, Avatar, notification} from 'antd';
+import host from 'host';
 import './index.less';
 
 const {Header} = Layout;
 
 const logoutUrl = 'server/LoginOut';
 
-const orignalSetItem = sessionStorage.setItem;
-sessionStorage.setItem = function (key, newValue) {
-    const setItemEvent = new Event("setItemEvent");
-    setItemEvent.key = key;
-    setItemEvent.newValue = newValue;
-    window.dispatchEvent(setItemEvent);
-    orignalSetItem.apply(this, arguments);
-};
-
+@connect(state => state.app)
 class Index extends React.Component {
     constructor(props) {
         super(props);
@@ -30,26 +23,14 @@ class Index extends React.Component {
                 </Menu.Item>
             </Menu>
         );
-
-        this.state = {
-            avatar: sessionStorage.getItem('avatar')
-        };
     }
 
     componentDidMount = () => {
-        window.addEventListener('setItemEvent', e => {
-            if (e.key === 'avatar' && e.newValue) {
-                this.setState({avatar: e.newValue});
-            }
-        });
+        console.log('global user === ', this.props);
     }
 
     goUserCenter = () => {
-        this.context.router.push('/frame/setting/list/');
-    }
-
-    checkMessage = () => {
-        this.context.router.push('/frame/setting/list/message');
+        this.context.router.push('/setting/list/');
     }
 
     logout = () => {
@@ -75,9 +56,18 @@ class Index extends React.Component {
         // });
     }
 
+    onToggleClick = () => {
+        const {dispatch, collapsed} = this.props;
+        dispatch({
+            type: 'app/onCollapseChange',
+            payload: !collapsed
+        });
+    }
+
     render() {
-        const {collapsed, onToggleClick} = this.props;
-        const {avatar} = this.state;
+        const {collapsed, user} = this.props;
+        const {File, realName} = user;
+        const avatar = File && host.FILE_ASSET + `${File.id + File.fileType}`;
 
         return (
             <Header className="zui-header">
@@ -85,16 +75,9 @@ class Index extends React.Component {
                     <Icon
                         className="trigger"
                         type={collapsed ? 'menu-unfold' : 'menu-fold'}
-                        onClick={onToggleClick}
+                        onClick={this.onToggleClick}
                     />
                     <div>
-                        {/*<Badge dot>*/}
-                    {/*<span onClick={this.checkMessage}>*/}
-                    {/*<Icon type="bell" theme="outlined"*/}
-                          {/*style={{fontSize: 20, color: '#fff', verticalAlign: 'text-bottom'}}/>*/}
-                    {/*</span>*/}
-                        {/*</Badge>*/}
-                        {/*<Divider type="vertical" style={{margin: '0 30px'}}/>*/}
                         <Dropdown overlay={this.menu}>
                             <a className="ant-dropdown-link" style={{color: '#fff'}}>
                                 <Avatar
@@ -102,7 +85,7 @@ class Index extends React.Component {
                                     size="small"
                                     icon={avatar ? avatar : "user"}
                                     src={avatar ? avatar : null}
-                                /> {sessionStorage.realName} <Icon type="down"/>
+                                /> {realName} <Icon type="down"/>
                             </a>
                         </Dropdown>
                     </div>
@@ -110,10 +93,6 @@ class Index extends React.Component {
             </Header>
         );
     }
-}
-
-Index.contextTypes = {
-    router: PropTypes.object
 }
 
 export default Index;

@@ -24,10 +24,7 @@ import '../index.less';
 
 const Search = Input.Search;
 
-@connect((state) => {
-    console.log('connect state == ', state);
-    return state.userList;
-})
+@connect(state => state.userList)
 class Index extends React.Component {
     constructor(props) {
         super(props);
@@ -121,6 +118,10 @@ class Index extends React.Component {
                     </div>
                 )
             }];
+    }
+
+    componentDidMount() {
+        // console.log('userList === ', this.props);
     }
 
     queryList = () => {

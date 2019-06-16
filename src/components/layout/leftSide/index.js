@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'umi/link';
-import PropTypes from 'prop-types';
+import {connect} from "dva";
 import {Layout, Icon, Menu} from 'antd';
 import {Scrollbars} from 'react-custom-scrollbars';
 import _find from 'lodash/find';
@@ -8,9 +8,10 @@ import {admin} from './authority';
 import menuTree from './menu';
 import './index.less';
 
-const {Sider} = Layout;
 const SubMenu = Menu.SubMenu;
+const {Sider} = Layout;
 
+@connect((state) => state.app)
 class Index extends React.Component {
     constructor(props) {
         super(props);
@@ -26,16 +27,6 @@ class Index extends React.Component {
 
     componentDidMount = () => {
         this.setAuthMenu(this.selectActiveTab);
-
-        window.addEventListener('hashchange', () => {
-            this.selectActiveTab();
-        });
-    }
-
-    componentWillUnmount = () => {
-        window.removeEventListener('hashchange', () => {
-            this.selectActiveTab();
-        });
     }
 
     setAuthMenu = callback => {
@@ -145,7 +136,11 @@ class Index extends React.Component {
     }
 
     onBreakpoint = broken => {
-        // this.props.onToggleClick(broken ? false : true);
+        const {dispatch} = this.props;
+        dispatch({
+            type: 'app/onCollapseChange',
+            payload: broken
+        });
     }
 
     render() {
@@ -173,10 +168,6 @@ class Index extends React.Component {
             </Sider>
         );
     }
-}
-
-Index.contextTypes = {
-    router: PropTypes.object
 }
 
 export default Index;

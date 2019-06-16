@@ -18,6 +18,7 @@ export default {
             }, {
                 path: '/',
                 component: '../layouts/FrameLayout',
+                Routes: ['src/pages/Authorized'],
                 routes: [{
                     path: '/user',
                     name: 'user',
@@ -79,6 +80,11 @@ export default {
                     enable: true,
                     default: 'zh-CN',
                     baseNavigator: true,
+                },
+                dynamicImport: {
+                    loadingComponent: './components/PageLoading/index',
+                    webpackChunkName: true,
+                    level: 3,
                 },
                 dll: {
                     include: ['dva', 'dva/router', 'dva/saga', 'dva/fetch', 'antd/es'],

@@ -1,7 +1,6 @@
 import {routerRedux} from 'dva/router';
 import {login} from './service';
 import {message} from "antd";
-import host from 'host';
 
 export default {
     namespace: 'login',
@@ -39,15 +38,19 @@ export default {
                 sessionStorage.setItem('userId', backData.id);
                 sessionStorage.setItem('userName', backData.userName);
                 sessionStorage.setItem('realName', backData.realName);
-                if (backData.File) {
-                    sessionStorage.setItem('avatar', host.FILE_ASSET + `${backData.File.id + backData.File.fileType}`);
-                }
+
                 yield put({
                     type: 'setState',
                     payload: {
                         submitLoading: false,
                     }
                 });
+                /* 存储用户信息到全局 */
+                yield put({
+                    type: 'app/saveUserInfo',
+                    payload: backData
+                });
+
                 yield put(routerRedux.push('/user/list'));
             } else {
                 message.error(data.backMsg);

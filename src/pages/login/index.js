@@ -7,17 +7,9 @@ import loginBg from 'Img/login-bg.jpg';
 
 const FormItem = Form.Item;
 
-@connect((state) => state.login)
+@connect(state => state.login)
 @Form.create()
 class Index extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    componentDidMount = () => {
-        sessionStorage.clear();
-    }
-
     handleSubmit = (e) => {
         const {dispatch, form} = this.props;
         e.preventDefault();
@@ -30,7 +22,6 @@ class Index extends React.Component {
 
     render() {
         const {submitLoading, form} = this.props;
-        console.log('submitLoading == ', submitLoading);
         const {getFieldDecorator} = form;
 
         return (
