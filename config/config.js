@@ -4,8 +4,9 @@ import {resolve} from 'path';
 import customTheme from '../src/utils/customTheme';
 
 export default {
-    // base: './',
-    // publicPath: './',
+    base: './',
+    publicPath: './',
+    history: 'hash',
     treeShaking: true,
     // 路由配置
     routes: [
