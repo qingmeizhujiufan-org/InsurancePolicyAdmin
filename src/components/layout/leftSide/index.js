@@ -13,23 +13,12 @@ const {Sider} = Layout;
 
 @connect((state) => state.app)
 class Index extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            isLoaded: false,
-            defaultOpenKeys: [],
-            defaultSelectedKeys: [],
-            authMenu: [],
-            subMenuList: null
-        };
-    }
-
     componentDidMount = () => {
-        this.setAuthMenu(this.selectActiveTab);
+        this.setAuthMenu();
     }
 
     setAuthMenu = callback => {
+        const {dispatch} = this.props;
         if (sessionStorage.type !== undefined && sessionStorage.type !== null) {
             const type = sessionStorage.type;
             let authority, authority_menu = [];
@@ -53,14 +42,24 @@ class Index extends React.Component {
                 }
             });
 
-            this.setState({
-                isLoaded: true,
-                defaultOpenKeys: authority.defaultOpenKeys,
-                defaultSelectedKeys: authority.defaultSelectedKeys,
-                authMenu: _menu
-            }, () => {
-                if (typeof callback === 'function') callback();
+            dispatch({
+                type: 'app/setAuthMenu',
+                payload: {
+                    isLoaded: true,
+                    defaultOpenKeys: authority.defaultOpenKeys,
+                    defaultSelectedKeys: authority.defaultSelectedKeys,
+                    authMenu: _menu
+                }
             });
+
+            // this.setState({
+            //     isLoaded: true,
+            //     defaultOpenKeys: authority.defaultOpenKeys,
+            //     defaultSelectedKeys: authority.defaultSelectedKeys,
+            //     authMenu: _menu
+            // }, () => {
+            //     if (typeof callback === 'function') callback();
+            // });
         }
     }
 
@@ -76,18 +75,8 @@ class Index extends React.Component {
         }
     }
 
-    getFlatMenu = menu => {
-        return menu.reduce((keys, item) => {
-            keys.push(item);
-            if (item.children) {
-                return keys.concat(this.getFlatMenu(item.children));
-            }
-            return keys;
-        }, []);
-    }
-
     setMenuChildren = () => {
-        const {selectedKeys, defaultOpenKeys, defaultSelectedKeys, authMenu} = this.state;
+        const {selectedKeys, defaultOpenKeys, defaultSelectedKeys, authMenu} = this.props;
         const subMenuList = authMenu.map(item => {
             if (item.children) {
                 return (
@@ -144,8 +133,7 @@ class Index extends React.Component {
     }
 
     render() {
-        const {isLoaded} = this.state;
-        const {collapsed} = this.props;
+        const {collapsed, isLoaded} = this.props;
 
         return (
             <Sider

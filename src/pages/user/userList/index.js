@@ -2,7 +2,6 @@ import React from 'react';
 import {connect} from 'dva';
 import Link from 'umi/link';
 import {routerRedux} from 'dva/router';
-import PropTypes from 'prop-types';
 import {
     notification,
     Icon,
@@ -19,7 +18,7 @@ import {
     Modal
 } from 'antd';
 import {Table, Card} from 'zui';
-import assign from 'lodash/assign';
+import _assign from 'lodash/assign';
 import '../index.less';
 
 const Search = Input.Search;
@@ -122,41 +121,22 @@ class Index extends React.Component {
 
     componentDidMount() {
         // console.log('userList === ', this.props);
+        this.queryList();
     }
 
     queryList = () => {
-        const {params, keyWords} = this.props;
-        const param = assign({}, params, {keyWords});
-        axios.get('user/queryList', {
-            params: param
-        }).then(res => res.data).then(data => {
-            if (data.success) {
-                if (data.backData && data.backData.content) {
-                    const backData = data.backData.content;
-                    const total = backData.length;
-                    backData.map(item => {
-                        item.key = item.id;
-                    });
+        const {dispatch, params, keyWords} = this.props;
+        const _params = _assign({}, params, {keyWords});
 
-                    this.setState({
-                        dataSource: backData,
-                        pagination: {total}
-                    });
-                } else {
-                    this.setState({
-                        dataSource: [],
-                        pagination: {total: 0}
-                    });
-                }
-            } else {
-                message.error('查询列表失败');
-            }
+        dispatch({
+            type: 'userList/queryList',
+            payload: _params
         });
     }
 
     // 处理分页变化
     handlePageChange = param => {
-        const params = assign({}, this.state.params, param);
+        const params = _assign({}, this.state.params, param);
         this.setState({params}, () => {
             this.queryList();
         });
@@ -165,14 +145,11 @@ class Index extends React.Component {
     // 搜索
     onSearch = (value, event) => {
         console.log('onsearch value == ', value);
-        this.setState({
-            params: {
-                pageNumber: 1,
-                pageSize: 10,
-            },
-            keyWords: value
-        }, () => {
-            this.queryList();
+        const {dispatch} = this.props;
+
+        dispatch({
+            type: 'userList/onSearch',
+            payload: {keyWords: value}
         });
     }
 

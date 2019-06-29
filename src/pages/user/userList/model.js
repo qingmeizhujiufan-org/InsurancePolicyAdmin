@@ -7,7 +7,7 @@ export default {
     namespace: 'userList',
 
     state: {
-        loading: true,
+        loading: false,
         dataSource: [],
         pagination: {total: 0},
         params: {
@@ -18,13 +18,17 @@ export default {
     },
 
     effects: {
+        /* 查询业务员列表 */
         * queryList({payload}, {put, call, select}) {
+            yield put({
+                type: 'setState',
+                payload: {loading: true}
+            });
+            console.log('queryList payload == ', payload);
             const data = yield call(queryList, payload);
             yield put({
                 type: 'setState',
-                payload: {
-                    loading: false
-                }
+                payload: {loading: false}
             });
             if (data.success) {
                 const backData = data.backData || [];
@@ -41,6 +45,30 @@ export default {
                 message.error('查询列表失败');
             }
         },
+
+        /* 搜索 */
+        * onSearch({payload}, {put, call, select}) {
+            const {keyWords} = payload;
+
+            yield put({
+                type: 'setState',
+                payload: {
+                    params: {
+                        pageNumber: 1,
+                        pageSize: 10,
+                    },
+                    keyWords
+                }
+            });
+            yield put({
+                type: 'queryList',
+                payload: {
+                    pageNumber: 1,
+                    pageSize: 10,
+                    keyWords
+                }
+            });
+        },
     },
 
     reducers: {
@@ -54,14 +82,14 @@ export default {
 
     subscriptions: {
         setup({dispatch, history}) {
-            history.listen(({pathname}) => {
-                if (
-                    pathMatchRegexp('/user', pathname) ||
-                    pathMatchRegexp('/user/list', pathname)
-                ) {
-                    dispatch({type: 'queryList'});
-                }
-            })
+            // history.listen(({pathname}) => {
+            //             //     if (
+            //             //         pathMatchRegexp('/user', pathname) ||
+            //             //         pathMatchRegexp('/user/list', pathname)
+            //             //     ) {
+            //             //         dispatch({type: 'queryList'});
+            //             //     }
+            //             // })
         },
     },
 }

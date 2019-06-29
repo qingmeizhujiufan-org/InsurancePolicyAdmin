@@ -23,8 +23,8 @@
         "react-draft-wysiwyg": "^1.12.13",
         "react-fittext": "^1.0.0",
         "svg-sprite-loader": "^3.6.2",
-        "umi": "^2.7.7",
-        "umi-plugin-react": "^1.8.2",
+        "umi": "^2.8.7",
+        "umi-plugin-react": "^1.9.6",
         "umi-request": "^1.0.8",
         "webpack": "^4.33.0"
     },

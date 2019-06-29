@@ -104,3 +104,14 @@ export function exportExcel(options) {
 export function pathMatchRegexp(regexp, pathname) {
     return pathToRegexp(regexp).exec(pathname);
 }
+
+//获取listmenu
+export function getFlatMenu(menu) {
+    return menu.reduce((keys, item) => {
+        keys.push(item);
+        if (item.children) {
+            return keys.concat(getFlatMenu(item.children));
+        }
+        return keys;
+    }, []);
+}
