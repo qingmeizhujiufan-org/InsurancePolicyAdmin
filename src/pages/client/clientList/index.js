@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import {
     notification,
     Icon,
-    Divider,
     Breadcrumb,
     message,
     Dropdown,
@@ -18,55 +17,40 @@ import {
 import {Table, Card} from 'zui';
 import assign from 'lodash/assign';
 import '../index.less';
+import {connect} from "dva";
 
 const Search = Input.Search;
 
+@connect(state => state.clientList)
 class Index extends React.Component {
     constructor(props) {
         super(props);
 
         this.columns = [
             {
-                title: '昵称',
+                title: '客户姓名',
                 width: 200,
                 align: 'center',
-                dataIndex: 'nickname',
-                key: 'nickname',
-                render: (text, record, index) => (
-                    <Link to={this.onDetail(record.id)}>{text}</Link>
-                )
+                dataIndex: 'customName',
+                key: 'customName',
             }, {
-                title: '真实姓名',
-                width: 200,
+                title: '性别',
+                width: 80,
                 align: 'center',
-                dataIndex: 'realname',
-                key: 'realname',
+                dataIndex: 'customSex',
+                key: 'customSex'
             }, {
-                title: '个人手机号',
+                title: '客户手机号',
                 width: 150,
                 align: 'center',
-                dataIndex: 'telephone',
-                key: 'telephone',
+                dataIndex: 'customTel',
+                key: 'customTel',
             }, {
-                title: '生日',
+                title: '客户生日',
                 width: 150,
                 align: 'center',
-                dataIndex: 'birthday',
-                key: 'birthday',
-            }, {
-                title: '是否冻结',
-                width: 120,
-                align: 'center',
-                dataIndex: 'isFrozen',
-                key: 'isFrozen',
-                render: (text, record, index) => (
-                    <Switch
-                        checkedChildren="是"
-                        unCheckedChildren="否"
-                        checked={text === 1 ? true : false}
-                        onChange={checked => this.onFrozenChange(checked, record, index)}
-                    />
-                )
+                dataIndex: 'customBirth',
+                key: 'customBirth',
             }, {
                 title: '创建时间',
                 width: 200,
@@ -91,78 +75,37 @@ class Index extends React.Component {
                 align: 'center',
                 render: (text, record, index) => (
                     <div>
-                        <a onClick={() => this.resetPassword(record.id)}>重置密码</a>
-                        <Divider type="vertical"/>
-                        <Dropdown
-                            placement="bottomCenter"
-                            overlay={
-                                <Menu>
-                                    <Menu.Item>
-                                        <Link to={this.onDetail(record.id)}>查看</Link>
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                        <Link to={this.onEdit(record.id)}>编辑</Link>
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                        <a onClick={() => this.onDelete(record.id)}>删除</a>
-                                    </Menu.Item>
-                                </Menu>
-                            }
-                        >
-                            <a className="ant-dropdown-link">操作</a>
-                        </Dropdown>
+                        {/*<Dropdown*/}
+                        {/*placement="bottomCenter"*/}
+                        {/*overlay={*/}
+                        {/*<Menu>*/}
+                        {/*<Menu.Item>*/}
+                        {/*<Link to={this.onDetail(record.id)}>查看</Link>*/}
+                        {/*</Menu.Item>*/}
+                        {/*<Menu.Item>*/}
+                        {/*<Link to={this.onEdit(record.id)}>编辑</Link>*/}
+                        {/*</Menu.Item>*/}
+                        {/*<Menu.Item>*/}
+                        {/*<a onClick={() => this.onDelete(record.id)}>删除</a>*/}
+                        {/*</Menu.Item>*/}
+                        {/*</Menu>*/}
+                        {/*}*/}
+                        {/*>*/}
+                        {/*<a className="ant-dropdown-link">操作</a>*/}
+                        {/*</Dropdown>*/}
                     </div>
                 )
-            }];
-
-        this.state = {
-            loading: false,
-            dataSource: [],
-            pagination: {},
-            params: {
-                pageNumber: 1,
-                pageSize: 10,
-            },
-            keyWords: ''
-        };
+            }
+        ];
     }
 
-    componentWillMount = () => {
-    }
 
     componentDidMount = () => {
-        // this.queryList();
-    }
+        const {dispatch, match} = this.props;
 
-    queryList = () => {
-        const {params, keyWords} = this.state;
-        const param = assign({}, params, {keyWords});
-        this.setState({loading: true});
-        axios.get('user/queryList', {
-            params: param
-        }).then(res => res.data).then(data => {
-            if (data.success) {
-                if (data.backData && data.backData.content) {
-                    const backData = data.backData.content;
-                    const total = backData.length;
-                    backData.map(item => {
-                        item.key = item.id;
-                    });
-
-                    this.setState({
-                        dataSource: backData,
-                        pagination: {total}
-                    });
-                } else {
-                    this.setState({
-                        dataSource: [],
-                        pagination: {total: 0}
-                    });
-                }
-            } else {
-                message.error('查询列表失败');
-            }
-            this.setState({loading: false});
+        dispatch({
+            type: 'clientList/queryCustomList',
+            payload: {}
         });
     }
 
@@ -188,32 +131,6 @@ class Index extends React.Component {
         });
     }
 
-    resetPassword = (id) => {
-        Modal.confirm({
-            title: '提示',
-            content: '确认要重置密码吗？',
-            okText: '确认',
-            cancelText: '取消',
-            onOk: () => {
-                const param = {
-                    id: id,
-                    updateBy: sessionStorage.getItem('userName')
-                };
-                param.id = id;
-                axios.post('admin/resetPassword', param).then(res => res.data).then(data => {
-                    if (data.success) {
-                        notification.success({
-                            message: '提示',
-                            description: data.backMsg
-                        });
-                    } else {
-                        message.error(data.backMsg);
-                    }
-                })
-            }
-        });
-    }
-
     onDetail = id => {
         return `/frame/user/list/detail/${id}`
     }
@@ -222,62 +139,8 @@ class Index extends React.Component {
         return `/frame/user/list/edit/${id}`
     }
 
-    onFrozenChange = (checked, record, index) => {
-        const param = {
-            id: record.id,
-            isFrozen: checked ? 1 : 0,
-            updateBy: sessionStorage.getItem('userName')
-        };
-
-        axios.post('admin/frozen', param).then(res => res.data).then(data => {
-            if (data.success) {
-                notification.success({
-                    message: '提示',
-                    description: data.backMsg
-                });
-                const dataSource = this.state.dataSource;
-                dataSource[index].isFrozen = checked ? 1 : 0;
-                this.setState({dataSource});
-            } else {
-                message.error(data.backMsg);
-            }
-        })
-    }
-
-    onDelete = id => {
-        Modal.confirm({
-            title: '提示',
-            content: '确认要删除吗？',
-            okText: '确认',
-            cancelText: '取消',
-            onOk: () => {
-                let param = {};
-                param.id = id;
-                axios.post('admin/delete', param).then(res => res.data).then(data => {
-                    if (data.success) {
-                        notification.success({
-                            message: '提示',
-                            description: '删除成功！'
-                        });
-
-                        this.setState({
-                            params: {
-                                pageNumber: 1,
-                                pageSize: 10
-                            }
-                        }, () => {
-                            this.queryList();
-                        });
-                    } else {
-                        message.error(data.backMsg);
-                    }
-                });
-            }
-        });
-    }
-
     render() {
-        const {dataSource, pagination, loading} = this.state;
+        const {dataSource, pagination, loading} = this.props;
 
         return (
             <div className="zui-content">
@@ -317,10 +180,6 @@ class Index extends React.Component {
             </div>
         );
     }
-}
-
-Index.contextTypes = {
-    router: PropTypes.object
 }
 
 export default Index;

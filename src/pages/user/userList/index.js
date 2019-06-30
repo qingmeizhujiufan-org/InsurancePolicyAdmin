@@ -180,7 +180,7 @@ class Index extends React.Component {
     }
 
     onDetail = id => {
-        return `/frame/user/list/detail/${id}`
+        return `/user/list/detail/${id}`
     }
 
     onEdit = id => {

@@ -28,6 +28,10 @@ export default {
                         path: '/user/list',
                         component: './user/userList',
                     }, {
+                        name: 'userDetail',
+                        path: '/user/list/detail/:id',
+                        component: './user/$userDetail',
+                    }, {
                         name: 'userEdit',
                         path: '/user/edit/:id',
                         component: './user/$userEdit',
