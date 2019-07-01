@@ -4,8 +4,8 @@ import {resolve} from 'path';
 import customTheme from '../src/utils/customTheme';
 
 export default {
-    base: './',
-    publicPath: './',
+    // base: '../',
+    // publicPath: '../',
     history: 'hash',
     treeShaking: true,
     // 路由配置
@@ -58,7 +58,7 @@ export default {
                     routes: [{
                         name: 'list',
                         path: '/insurancecompany/list',
-                        component: './client/clientList',
+                        component: './insurancecompany/insuranceCompanyList',
                     }, {
                         name: 'insurancecompanyEdit',
                         path: '/insurancecompany/edit/:id',
@@ -67,6 +67,14 @@ export default {
                         name: 'add',
                         path: '/insurancecompany/add',
                         component: './insurancecompany/insurancecompanyAdd',
+                    }]
+                }, {
+                    path: '/setting',
+                    name: 'setting',
+                    routes: [{
+                        name: 'userCenter',
+                        path: '/setting/userCenter',
+                        component: './setting/userCenter',
                     }]
                 }]
             }]
@@ -128,6 +136,10 @@ export default {
             'lodash',
         ],
     ],
+    // exportStatic: {
+    //     htmlSuffix: true,
+    //     dynamicRoot: true,
+    // },
     // proxy: {
     //   '/api/': {
     //     target: 'http://127.0.0.1:7001/',

@@ -2,14 +2,15 @@
 * created by zhongzheng at 2019/6/16.
 * */
 
+import store from 'store';
 import {getFlatMenu} from 'utils/util';
 
 export default {
     namespace: 'app',
 
     state: {
-        user: {},
-        collapsed: false,
+        user: store.get('user') || {},
+        collapsed: store.get('collapsed') || false,
         locationPathname: '',
         isLoaded: false,
         authMenu: [],
@@ -68,12 +69,15 @@ export default {
             };
         },
         saveUserInfo(state, {payload}) {
+            console.log('saveUserInfo == ', payload);
+            store.set('user', payload);
             return {
                 ...state,
                 user: payload,
             }
         },
         onCollapseChange(state, {payload}) {
+            store.set('collapsed', payload);
             return {
                 ...state,
                 collapsed: payload

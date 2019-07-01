@@ -51,27 +51,6 @@ class Index extends React.Component {
                     authMenu: _menu
                 }
             });
-
-            // this.setState({
-            //     isLoaded: true,
-            //     defaultOpenKeys: authority.defaultOpenKeys,
-            //     defaultSelectedKeys: authority.defaultSelectedKeys,
-            //     authMenu: _menu
-            // }, () => {
-            //     if (typeof callback === 'function') callback();
-            // });
-        }
-    }
-
-    selectActiveTab = () => {
-        const menu = this.getFlatMenu(this.state.authMenu);
-        const hashUrl = location.pathname;
-        for (let i = 0; i < menu.length; i++) {
-            const item = menu[i];
-            if (hashUrl.indexOf(item.link) > -1) {
-                this.setState({selectedKeys: item.key});
-                return;
-            }
         }
     }
 
@@ -118,14 +97,8 @@ class Index extends React.Component {
         );
     }
 
-    onClick = e => {
-        this.setState({
-            selectedKeys: e.key
-        });
-    }
-
     onBreakpoint = broken => {
-        const {dispatch} = this.props;
+        const {dispatch, collapsed} = this.props;
         dispatch({
             type: 'app/onCollapseChange',
             payload: broken

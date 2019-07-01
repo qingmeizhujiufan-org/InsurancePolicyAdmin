@@ -22,6 +22,7 @@
         "react-custom-scrollbars": "^4.2.1",
         "react-draft-wysiwyg": "^1.12.13",
         "react-fittext": "^1.0.0",
+        "store": "^2.0.12",
         "svg-sprite-loader": "^3.6.2",
         "umi": "^2.8.7",
         "umi-plugin-react": "^1.9.6",

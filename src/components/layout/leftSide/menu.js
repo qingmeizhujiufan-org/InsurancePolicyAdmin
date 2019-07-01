@@ -39,7 +39,7 @@ const Menu = [{
     label: '个人设置',
     children: [{
         key: '003_1',
-        link: '/setting',
+        link: '/setting/userCenter',
         label: '个人中心'
     }]
 }];

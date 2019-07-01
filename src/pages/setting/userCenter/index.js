@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import {connect} from "dva";
 import {
     Row,
     Col,
@@ -13,110 +13,90 @@ import {
     notification
 } from 'antd';
 import {Upload} from 'zui';
-import restUrl from 'RestUrl';
+import {formItemLayout, itemGrid} from 'utils/formItemGrid';
+import host from 'host';
 import '../index.less';
-import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
 
+@connect((state) => {
+    return {
+        user: state.app.user,
+        ...state.userCenter
+    }
+})
+@Form.create()
 class DetailForm extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            id: '',
-            imageUrl: '',
-            fileList: [],
-            loading: false,
-            roleList: [],
-            submitLoading: false,
-            init: false,
-        };
-    }
-
     componentDidMount = () => {
-    }
+        const {dispatch, form, user} = this.props;
+        const values = {};
+        values.realName = user.realName;
+        if (user.avatarSrc) {
+            values.avatarSrc = [];
+            values.avatarSrc.push({
+                uid: '-1',
+                name: 'avatar',
+                status: 'done',
+                url: user.avatarSrc,
+                thumbUrl: user.avatarSrc,
+                response: {
+                    id: user.avatarSrc
+                }
+            });
 
-    componentWillReceiveProps = nextProps => {
-        if ('data' in nextProps && nextProps['data'] && !this.state.init) {
-            this.setFields(nextProps['data']);
+            dispatch({
+                type: 'userCenter/setState',
+                payload: {
+                    fileList: [].concat(values.avatarSrc)
+                }
+            });
         }
+
+        form.setFieldsValue(values);
     }
 
     handleChange = fileList => {
-        this.setState({fileList});
-    }
+        const {dispatch} = this.props;
 
-    setFields = val => {
-        const values = this.props.form.getFieldsValue();
-        for (let key in values) {
-            if (key === 'avatarSrc') {
-                values[key] = [];
-                val[key].map((item, index) => {
-                    values[key].push({
-                        uid: index,
-                        name: item.fileName,
-                        status: 'done',
-                        url: restUrl.FILE_ASSET + `${item.id + item.fileType}`,
-                        thumbUrl: restUrl.FILE_ASSET + `${item.id + item.fileType}`,
-                        response: {
-                            id: item.id
-                        }
-                    });
-                });
-                this.setState({fileList: values[key]});
-            } else {
-                values[key] = val[key];
+        dispatch({
+            type: 'userCenter/setState',
+            payload: {
+                fileList
             }
-        }
-        this.setState({init: true}, () => {
-            this.props.form.setFieldsValue(values);
         });
-    }
-
-    validatePhone = (rule, value, callback) => {
-        const reg = /^[1][3,4,5,7,8][0-9]{9}$/;
-        if (value && value !== '' && !reg.test(value)) {
-            callback(new Error('手机号格式不正确'));
-        } else {
-            callback();
-        }
     }
 
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                const avatarSrc = values.avatarSrc;
-                values.id = sessionStorage.userId;
+                const {dispatch, user, fileList} = this.props;
+                values.id = user.id;
                 values.avatarSrc = values.avatarSrc && values.avatarSrc.map(item => item.response.id).join(',');
-                console.log('avatarSrc == ', avatarSrc);
-                this.setState({
-                    submitLoading: true
-                });
-                axios.post('admin/updateUser', values).then(res => res.data).then(data => {
-                    if (data.success) {
-                        notification.success({
-                            message: '提示',
-                            description: '用户信息保存成功！'
-                        });
-                        sessionStorage.setItem('avatar', avatarSrc[0].thumbUrl);
-                        this.queryDetail();
-                    } else {
-                        message.error(data.backMsg);
+
+                dispatch({
+                    type: 'userCenter/update',
+                    payload: {
+                        ...values,
+                        user: {
+                            ...user,
+                            realName: values.realName,
+                            avatarSrc: fileList[0] && fileList[0].thumbUrl
+                        }
                     }
-                }).finally(() => this.setState({submitLoading: false}));
+                });
             }
         });
     }
 
     render() {
-        const {getFieldDecorator} = this.props.form;
-        const {fileList, submitLoading} = this.state;
+        const {form, fileList, submitLoading} = this.props;
+        const {getFieldDecorator} = form;
+
         return (
             <div className='userCenter'>
-                <Form layout="vertical" hideRequiredMark onSubmit={this.handleSubmit}>
+                <Form layout="vertical" onSubmit={this.handleSubmit}>
                     <Row type="flex" justify="center">
                         <Col span={8}>
                             <Row>
@@ -128,32 +108,6 @@ class DetailForm extends React.Component {
                                             rules: [{required: true, message: '请输入用户名'}],
                                         })(
                                             <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span={20}>
-                                    <FormItem
-                                        label="个人电话"
-                                    >
-                                        {getFieldDecorator('phone', {
-                                            rules: [{required: true, message: '请输入个人电话'}, {
-                                                validator: this.validatePhone,
-                                            }]
-                                        })(
-                                            <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span={20}>
-                                    <FormItem
-                                        label="创建时间"
-                                    >
-                                        {getFieldDecorator('created_at')(
-                                            <Input disabled/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -188,23 +142,12 @@ class DetailForm extends React.Component {
     }
 }
 
-DetailForm = Form.create({})(DetailForm);
-
 class PasswordForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             submitLoading: false
         };
-    }
-
-    validatePhone = (rule, value, callback) => {
-        const reg = /^[1][3,4,5,7,8][0-9]{9}$/;
-        if (value && value !== '' && !reg.test(value)) {
-            callback(new Error('手机号格式不正确'));
-        } else {
-            callback();
-        }
     }
 
     handleSubmit = (e) => {
@@ -297,7 +240,7 @@ class Index extends React.Component {
     }
 
     componentDidMount = () => {
-        this.queryDetail();
+        // this.queryDetail();
     }
 
     queryDetail = () => {
@@ -330,7 +273,7 @@ class Index extends React.Component {
                 <div className='pageHeader'>
                     <div className="breadcrumb-block">
                         <Breadcrumb>
-                            <Breadcrumb.Item>个人管理</Breadcrumb.Item>
+                            <Breadcrumb.Item>个人设置</Breadcrumb.Item>
                             <Breadcrumb.Item>个人中心</Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
@@ -351,10 +294,6 @@ class Index extends React.Component {
             </div>
         );
     }
-}
-
-Index.contextTypes = {
-    router: PropTypes.object
 }
 
 export default Index;

@@ -1,10 +1,10 @@
 import {routerRedux} from 'dva/router';
-import {queryCustomList} from './service';
+import {queryList} from './service';
 import {message} from "antd";
 import {pathMatchRegexp} from 'utils/util';
 
 export default {
-    namespace: 'clientList',
+    namespace: 'insuranceCompanyList',
 
     state: {
         loading: false,
@@ -18,10 +18,10 @@ export default {
     },
 
     effects: {
-        /* 查询所有客户列表 */
-        * queryCustomList({payload}, {put, call, select}) {
+        /* 查询保险公司列表 */
+        * queryList({payload}, {put, call, select}) {
             console.log('queryList payload == ', payload);
-            const data = yield call(queryCustomList, payload);
+            const data = yield call(queryList, payload);
             if (data.success) {
                 const backData = data.backData || [];
                 const content = backData.content;
@@ -29,8 +29,8 @@ export default {
                 yield put({
                     type: 'setState',
                     payload: {
-                        dataSourceCustom: content,
-                        paginationCustom: {total}
+                        dataSource: content,
+                        pagination: {total}
                     }
                 });
             } else {
@@ -89,6 +89,19 @@ export default {
                 ...state,
                 ...payload,
             };
+        },
+    },
+
+    subscriptions: {
+        setup({dispatch, history}) {
+            // history.listen(({pathname}) => {
+            //             //     if (
+            //             //         pathMatchRegexp('/user', pathname) ||
+            //             //         pathMatchRegexp('/user/list', pathname)
+            //             //     ) {
+            //             //         dispatch({type: 'queryList'});
+            //             //     }
+            //             // })
         },
     },
 }

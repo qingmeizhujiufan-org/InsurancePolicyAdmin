@@ -33,6 +33,14 @@ class Index extends React.Component {
         this.context.router.push('/setting/list/');
     }
 
+    onToggleClick = () => {
+        const {dispatch, collapsed} = this.props;
+        dispatch({
+            type: 'app/onCollapseChange',
+            payload: !collapsed
+        });
+    }
+
     logout = () => {
         sessionStorage.clear();
         notification.success({
@@ -56,18 +64,10 @@ class Index extends React.Component {
         // });
     }
 
-    onToggleClick = () => {
-        const {dispatch, collapsed} = this.props;
-        dispatch({
-            type: 'app/onCollapseChange',
-            payload: !collapsed
-        });
-    }
-
     render() {
         const {collapsed, user} = this.props;
-        const {File, realName} = user;
-        const avatar = File && host.FILE_ASSET + `${File.id + File.fileType}`;
+        const {File, realName, avatarSrc} = user;
+        const avatar = (File && host.FILE_ASSET + `${File.id + File.fileType}`) || avatarSrc;
 
         return (
             <Header className="zui-header">

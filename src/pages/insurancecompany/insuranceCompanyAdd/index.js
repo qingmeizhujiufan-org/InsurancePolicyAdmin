@@ -1,4 +1,5 @@
 import React from 'react';
+import {connect} from "dva";
 import {
     Row,
     Col,
@@ -7,8 +8,6 @@ import {
     Breadcrumb,
     Button,
     Icon,
-    notification,
-    message
 } from 'antd';
 import {formItemLayout, itemGrid} from 'utils/formItemGrid';
 import {Upload} from 'zui';
@@ -16,92 +15,43 @@ import '../index.less';
 
 const FormItem = Form.Item;
 
+@connect(state => state.insuranceCompanyAdd)
 @Form.create()
 class Index extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            fileList: [],
-            confirmDirty: false,
-            submitLoading: false
-        };
-    }
-
-    componentDidMount = () => {
-    }
 
     handleChange = (fileList) => {
-        this.setState({fileList})
-    }
+        const {dispatch} = this.props;
 
-    handleConfirmBlur = (e) => {
-        const value = e.target.value;
-        this.setState({confirmDirty: this.state.confirmDirty || !!value});
-    }
-
-    compareToFirstPassword = (rule, value, callback) => {
-        const form = this.props.form;
-        if (value && value !== form.getFieldValue('password')) {
-            callback('密码不一致!');
-        } else {
-            callback();
-        }
-    }
-
-    validateToNextPassword = (rule, value, callback) => {
-        const form = this.props.form;
-        if (value && this.state.confirmDirty) {
-            form.validateFields(['confirm'], {force: true});
-        }
-        callback();
-    }
-
-    validatePhone = (rule, value, callback) => {
-        const reg = /^[1][3,4,5,7,8][0-9]{9}$/;
-        if (value && value !== '' && !reg.test(value)) {
-            callback(new Error('手机号格式不正确'));
-        } else {
-            callback();
-        }
+        dispatch({
+            type: 'insuranceCompanyAdd/setState',
+            payload: {
+                fileList
+            }
+        });
     }
 
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                if (values.avatarSrc) {
-                    values.avatarSrc = values.avatarSrc.map(item => item.response.id).join(',');
+                const {dispatch} = this.props;
+                if (values.logoUrl) {
+                    values.logoUrl = values.logoUrl.map(item => item.response.id).join(',');
                 }
-                delete values.confirm;
-                values.createBy = sessionStorage.getItem('userName');
                 console.log('handleSubmit  param === ', values);
-                this.setState({
-                    submitLoading: true
-                });
-                axios.post('admin/add', values).then(res => res.data).then(data => {
-                    if (data.success) {
-                        notification.success({
-                            message: '提示',
-                            description: '新增用户成功！'
-                        });
 
-                        return this.context.router.push('/frame/user/list');
-                    } else {
-                        message.error(data.backMsg);
-                    }
-
-                    this.setState({
-                        submitLoading: false
-                    });
+                dispatch({
+                    type: 'insuranceCompanyAdd/add',
+                    payload: values
                 });
             }
         });
     }
 
     render() {
-        const {getFieldDecorator} = this.props.form;
-        const {fileList, submitLoading} = this.state;
+        const {form, fileList, submitLoading} = this.props;
+        const {getFieldDecorator} = form;
+        console.log('fileList === ', fileList);
 
         return (
             <div className="zui-content">
@@ -123,7 +73,7 @@ class Index extends React.Component {
                                         label="公司Logo"
                                         {...formItemLayout}
                                     >
-                                        {getFieldDecorator('avatarSrc')(
+                                        {getFieldDecorator('logoUrl')(
                                             <Upload
                                                 listType={'picture'}
                                                 onChange={this.handleChange}
@@ -139,7 +89,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="公司名称"
                                     >
-                                        {getFieldDecorator('userName', {
+                                        {getFieldDecorator('companyName', {
                                             rules: [{
                                                 required: true, message: '请输入公司名称',
                                             }],
@@ -153,15 +103,32 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="热线电话"
                                     >
-                                        {getFieldDecorator('phone')(
+                                        {getFieldDecorator('hotLine')(
+                                            <Input/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="备注"
+                                    >
+                                        {getFieldDecorator('mark')(
                                             <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
                             </Row>
                             <Row type="flex" justify="center" style={{marginTop: 40}}>
-                                <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
-                                        loading={submitLoading}>提交</Button>
+                                <Button
+                                    type="primary"
+                                    size='large'
+                                    style={{width: 120}}
+                                    htmlType="submit"
+                                    loading={submitLoading}
+                                >提交</Button>
                             </Row>
                         </Form>
                     </div>
