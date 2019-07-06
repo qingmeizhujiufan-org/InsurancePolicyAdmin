@@ -24,16 +24,16 @@ export default {
                 type: 'setState',
                 payload: {loading: true}
             });
-            console.log('queryList payload == ', payload);
             const data = yield call(queryList, payload);
             yield put({
                 type: 'setState',
                 payload: {loading: false}
             });
+            console.log('queryList data == ', data);
             if (data.success) {
                 const backData = data.backData || [];
                 const content = backData.content;
-                const total = backData.length;
+                const total = backData.totalElements;
                 yield put({
                     type: 'setState',
                     payload: {

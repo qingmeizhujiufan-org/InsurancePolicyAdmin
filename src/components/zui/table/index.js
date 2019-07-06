@@ -3,7 +3,7 @@ import {Table} from 'antd';
 import assign from "lodash/assign";
 import './index.less';
 
-class ZZTable extends React.Component {
+class Index extends React.Component {
     constructor(props) {
         super(props);
 
@@ -66,7 +66,7 @@ class ZZTable extends React.Component {
 
         return (
             <Table
-                className={`zzTable ${className ? className : ''}`}
+                className={`zui-table ${className ? className : ''}`}
                 dataSource={_dataSource}
                 pagination={pagination ? _pagination : false}
                 {...restProps}
@@ -75,8 +75,8 @@ class ZZTable extends React.Component {
     }
 }
 
-ZZTable.defaultProps = {
+Index.defaultProps = {
     bordered: true,
 };
 
-export default ZZTable;
+export default Index;

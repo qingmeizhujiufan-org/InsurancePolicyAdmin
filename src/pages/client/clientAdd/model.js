@@ -1,59 +1,55 @@
-import {queryOneUser, update} from './service';
+import {routerRedux} from 'dva/router';
+import {queryUserList, add} from './service';
 import {message, notification} from "antd";
 import {pathMatchRegexp} from 'utils/util';
 
 export default {
-    namespace: 'userCenter',
+    namespace: 'clientAdd',
 
     state: {
-        fileList: [],
-        submitLoading: false,
-        submitLoadingPwd: false,
+        dataSource: [],
+        submitLoading: false
     },
 
     effects: {
-        /* 查询详情 */
-        * queryOneUser({payload, callback}, {put, call, select}) {
+        /* 查询业务员列表 */
+        * queryUserList({payload}, {put, call, select}) {
             yield put({
                 type: 'setState',
                 payload: {loading: true}
             });
-            const data = yield call(queryOneUser, payload);
+            const data = yield call(queryUserList, payload);
             yield put({
                 type: 'setState',
                 payload: {loading: false}
             });
             if (data.success) {
-                const backData = data.backData;
+                const backData = data.backData || [];
+                const content = backData.content;
+
                 yield put({
                     type: 'setState',
                     payload: {
-                        userInfo: backData,
+                        dataSource: content
                     }
                 });
-
-                if (callback && typeof callback === 'function') callback(backData);
             } else {
-                message.error('查询失败');
+                message.error('查询列表失败');
             }
         },
 
-        /* 更新用户信息 */
-        * update({payload}, {put, call, select}) {
-            const {user, ...params} = payload;
+        /* 新增保险公司 */
+        * add({payload}, {put, call, select}) {
             yield put({type: 'setState', payload: {submitLoading: true}});
-            const data = yield call(update, params);
+            const data = yield call(add, payload);
             yield put({type: 'setState', payload: {submitLoading: false}});
             if (data.success) {
-                yield put({
-                    type: 'app/saveUserInfo',
-                    payload: user
-                });
-
                 notification.success({
                     message: '提示',
-                    description: '个人信息更新成功！'
+                    description: '新增客户成功！'
                 });
+
+                yield put(routerRedux.push('/client/list'));
             } else {
                 message.error(data.backMsg);
             }

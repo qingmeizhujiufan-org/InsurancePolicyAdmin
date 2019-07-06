@@ -29,26 +29,40 @@ const TabPane = Tabs.TabPane;
 @Form.create()
 class DetailForm extends React.Component {
     componentDidMount = () => {
-        const {dispatch, form, user} = this.props;
-        const values = {};
-        values.realName = user.realName;
-        if (user.avatarSrc) {
-            values.avatarSrc = [];
-            values.avatarSrc.push({
+        const {dispatch, user} = this.props;
+
+        dispatch({
+            type: 'userCenter/queryOneUser',
+            payload: {
+                id: user.id
+            },
+            callback: res => {
+                this.setFields(res);
+            }
+        });
+    }
+
+    setFields = val => {
+        const {dispatch, form} = this.props;
+        const values = form.getFieldsValue();
+        values.realName = val.realName;
+        if (val.avatarSrc) {
+            const {id, fileType} = val.avatarSrc[0];
+            const fileList = [];
+            fileList.push({
                 uid: '-1',
                 name: 'avatar',
                 status: 'done',
-                url: user.avatarSrc,
-                thumbUrl: user.avatarSrc,
-                response: {
-                    id: user.avatarSrc
-                }
+                url: host.FILE_ASSET + id + fileType,
+                thumbUrl: host.FILE_ASSET + id + fileType,
+                response: {id}
             });
+            values.avatarSrc = fileList;
 
             dispatch({
                 type: 'userCenter/setState',
                 payload: {
-                    fileList: [].concat(values.avatarSrc)
+                    fileList
                 }
             });
         }
@@ -73,7 +87,7 @@ class DetailForm extends React.Component {
             if (!err) {
                 const {dispatch, user, fileList} = this.props;
                 values.id = user.id;
-                values.avatarSrc = values.avatarSrc && values.avatarSrc.map(item => item.response.id).join(',');
+                values.avatarSrc = fileList && fileList.map(item => item.response.id).join(',');
 
                 dispatch({
                     type: 'userCenter/update',

@@ -4,7 +4,7 @@ import {message, notification} from "antd";
 import {pathMatchRegexp} from 'utils/util';
 
 export default {
-    namespace: 'insuranceCompanyAdd',
+    namespace: 'channelAdd',
 
     state: {
         fileList: [],
@@ -12,7 +12,7 @@ export default {
     },
 
     effects: {
-        /* 新增保险公司 */
+        /* 新增渠道 */
         * add({payload}, {put, call, select}) {
             console.log('queryList payload == ', payload);
             yield put({type: 'setState', payload: {submitLoading: true}});
@@ -21,10 +21,10 @@ export default {
             if (data.success) {
                 notification.success({
                     message: '提示',
-                    description: '新增保险公司成功！'
+                    description: '新增渠道成功！'
                 });
 
-                yield put(routerRedux.push('/insurancecompany/list'));
+                yield put(routerRedux.push('/servicedata/list'));
             } else {
                 message.error(data.backMsg);
             }

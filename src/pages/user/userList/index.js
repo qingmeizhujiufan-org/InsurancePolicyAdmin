@@ -55,21 +55,7 @@ class Index extends React.Component {
                 width: 150,
                 align: 'center',
                 dataIndex: 'birthday',
-                key: 'birthday',
-            }, {
-                title: '是否冻结',
-                width: 120,
-                align: 'center',
-                dataIndex: 'isFrozen',
-                key: 'isFrozen',
-                render: (text, record, index) => (
-                    <Switch
-                        checkedChildren="是"
-                        unCheckedChildren="否"
-                        checked={text === 1 ? true : false}
-                        onChange={checked => this.onFrozenChange(checked, record, index)}
-                    />
-                )
+                key: 'birthday'
             }, {
                 title: '创建时间',
                 width: 200,
@@ -94,8 +80,6 @@ class Index extends React.Component {
                 align: 'center',
                 render: (text, record, index) => (
                     <div>
-                        <a onClick={() => this.resetPassword(record.id)}>重置密码</a>
-                        <Divider type="vertical"/>
                         <Dropdown
                             placement="bottomCenter"
                             overlay={
@@ -126,19 +110,22 @@ class Index extends React.Component {
 
     queryList = () => {
         const {dispatch, params, keyWords} = this.props;
-        const _params = _assign({}, params, {keyWords});
+        const payload = _assign({}, params, {keyWords});
 
         dispatch({
             type: 'userList/queryList',
-            payload: _params
+            payload
         });
     }
 
     // 处理分页变化
     handlePageChange = param => {
-        const params = _assign({}, this.state.params, param);
-        this.setState({params}, () => {
-            this.queryList();
+        const {dispatch, params, keyWords} = this.props;
+        const payload = _assign({}, params, param, {keyWords});
+
+        dispatch({
+            type: 'userList/queryList',
+            payload
         });
     }
 
@@ -153,60 +140,12 @@ class Index extends React.Component {
         });
     }
 
-    resetPassword = (id) => {
-        Modal.confirm({
-            title: '提示',
-            content: '确认要重置密码吗？',
-            okText: '确认',
-            cancelText: '取消',
-            onOk: () => {
-                const param = {
-                    id: id,
-                    updateBy: sessionStorage.getItem('userName')
-                };
-                param.id = id;
-                axios.post('admin/resetPassword', param).then(res => res.data).then(data => {
-                    if (data.success) {
-                        notification.success({
-                            message: '提示',
-                            description: data.backMsg
-                        });
-                    } else {
-                        message.error(data.backMsg);
-                    }
-                })
-            }
-        });
-    }
-
     onDetail = id => {
         return `/user/list/detail/${id}`
     }
 
     onEdit = id => {
         return `/user/edit/${id}`
-    }
-
-    onFrozenChange = (checked, record, index) => {
-        const param = {
-            id: record.id,
-            isFrozen: checked ? 1 : 0,
-            updateBy: sessionStorage.getItem('userName')
-        };
-
-        axios.post('admin/frozen', param).then(res => res.data).then(data => {
-            if (data.success) {
-                notification.success({
-                    message: '提示',
-                    description: data.backMsg
-                });
-                const dataSource = this.state.dataSource;
-                dataSource[index].isFrozen = checked ? 1 : 0;
-                this.setState({dataSource});
-            } else {
-                message.error(data.backMsg);
-            }
-        })
     }
 
     onDelete = id => {

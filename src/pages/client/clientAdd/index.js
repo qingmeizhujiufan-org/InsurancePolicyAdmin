@@ -8,75 +8,61 @@ import {
     Button,
     notification,
     message,
+    AutoComplete,
+    Select,
+    Divider
 } from 'antd';
+import {DatePicker} from 'zui';
 import {formItemLayout, itemGrid} from 'utils/formItemGrid';
 import '../index.less';
+import {connect} from "dva";
 
+const {Option} = AutoComplete;
+const {TextArea} = Input;
 const FormItem = Form.Item;
 
+@connect(state => state.clientAdd)
 @Form.create()
 class Index extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            confirmDirty: false,
-            submitLoading: false
-        };
-    }
 
     componentDidMount = () => {
+        const {dispatch} = this.props;
+
+        dispatch({
+            type: 'clientAdd/queryUserList',
+            payload: {
+                pageNumber: 1,
+                pageSize: 9999
+            }
+        });
     }
 
-    handleChange = (fileList) => {
-        this.setState({fileList})
+    onSelect = (val) => {
+        console.log('onSelect == ', val);
     }
 
-    validatePhone = (rule, value, callback) => {
-        const reg = /^[1][3,4,5,7,8][0-9]{9}$/;
-        if (value && value !== '' && !reg.test(value)) {
-            callback(new Error('手机号格式不正确'));
-        } else {
-            callback();
-        }
+    onChange = (val) => {
+        console.log('onSelect == ', val);
     }
 
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                if (values.avatarSrc) {
-                    values.avatarSrc = values.avatarSrc.map(item => item.response.id).join(',');
-                }
-                delete values.confirm;
-                values.createBy = sessionStorage.getItem('userName');
+                const {dispatch} = this.props;
                 console.log('handleSubmit  param === ', values);
-                this.setState({
-                    submitLoading: true
-                });
-                axios.post('admin/add', values).then(res => res.data).then(data => {
-                    if (data.success) {
-                        notification.success({
-                            message: '提示',
-                            description: '新增用户成功！'
-                        });
 
-                        return this.context.router.push('/frame/user/list');
-                    } else {
-                        message.error(data.backMsg);
-                    }
-
-                    this.setState({
-                        submitLoading: false
-                    });
+                dispatch({
+                    type: 'clientAdd/add',
+                    payload: values
                 });
             }
         });
     }
 
     render() {
-        const {getFieldDecorator} = this.props.form;
-        const {submitLoading} = this.state;
+        const {form, dataSource, submitLoading} = this.props;
+        const {getFieldDecorator} = form;
 
         return (
             <div className="zui-content">
@@ -92,27 +78,45 @@ class Index extends React.Component {
                 <div className='pageContent'>
                     <div className='ibox-content'>
                         <Form onSubmit={this.handleSubmit}>
+                            <Divider>关联信息</Divider>
                             <Row>
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="用户名"
+                                        label="关联业务员"
                                     >
-                                        {getFieldDecorator('userName', {
+                                        {getFieldDecorator('userId', {
                                             rules: [{
-                                                required: true, message: '请输入用户名',
+                                                required: true, message: '请输入关联业务员',
                                             }],
                                         })(
-                                            <Input/>
+                                            <AutoComplete
+                                                allowClear
+                                                onSelect={this.onSelect}
+                                                onSearch={this.onSearch}
+                                                placeholder="请输入业务员名称"
+                                            >
+                                                {
+                                                    dataSource.map(item => {
+                                                        return (
+                                                            <Option
+                                                                key={item.id}>{`${item.realname}/${item.telephone}`}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </AutoComplete>
                                         )}
                                     </FormItem>
                                 </Col>
+                            </Row>
+                            <Divider>基本信息</Divider>
+                            <Row>
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="真实姓名"
                                     >
-                                        {getFieldDecorator('realName', {
+                                        {getFieldDecorator('customName', {
                                             rules: [{
                                                 required: true, message: '请输入真实姓名'
                                             }]
@@ -124,14 +128,57 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="个人电话"
+                                        label="性别"
                                     >
-                                        {getFieldDecorator('phone', {
-                                            rules: [{required: true, message: '请输入个人电话'}, {
-                                                validator: this.validatePhone,
+                                        {getFieldDecorator('customSex', {
+                                            initialValue: 1
+                                        })(
+                                            <Select>
+                                                <Select.Option value={1}>男</Select.Option>
+                                                <Select.Option value={0}>女</Select.Option>
+                                            </Select>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="电话后四位"
+                                    >
+                                        {getFieldDecorator('customTel', {
+                                            rules: [{
+                                                required: true, message: '请输入个人电话'
                                             }],
                                         })(
                                             <Input/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="生日"
+                                    >
+                                        {getFieldDecorator('customBirth', {
+                                            rules: [{
+                                                required: true, message: '请选择生日'
+                                            }],
+                                        })(
+                                            <DatePicker/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="备注"
+                                    >
+                                        {getFieldDecorator('customName', {
+                                            rules: [{
+                                                required: true, message: '请输入真实姓名'
+                                            }]
+                                        })(
+                                            <TextArea autosize={{minRows: 2, maxRows: 6}}/>
                                         )}
                                     </FormItem>
                                 </Col>

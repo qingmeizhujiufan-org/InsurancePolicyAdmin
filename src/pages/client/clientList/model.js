@@ -29,32 +29,12 @@ export default {
                 yield put({
                     type: 'setState',
                     payload: {
-                        dataSourceCustom: content,
-                        paginationCustom: {total}
+                        dataSource: content,
+                        pagination: {total}
                     }
                 });
             } else {
                 message.error('查询客户列表失败');
-            }
-        },
-
-        /* 查询订单列表 */
-        * queryOrderList({payload}, {put, call, select}) {
-            console.log('queryList payload == ', payload);
-            const data = yield call(queryOrderList, payload);
-            if (data.success) {
-                const backData = data.backData || [];
-                const content = backData.content;
-                const total = backData.length;
-                yield put({
-                    type: 'setState',
-                    payload: {
-                        dataSourceOrder: content,
-                        paginationOrder: {total}
-                    }
-                });
-            } else {
-                message.error('查询订单列表失败');
             }
         },
 

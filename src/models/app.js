@@ -51,12 +51,12 @@ export default {
                         return;
                     }
                 }
-                if(i === menu.length) {
-                    yield put({
-                        type: 'setState',
-                        payload: {selectedKeys: '000_1'}
-                    });
-                }
+                // if(i === menu.length) {
+                //     yield put({
+                //         type: 'setState',
+                //         payload: {selectedKeys: '000_1'}
+                //     });
+                // }
             }
         },
     },

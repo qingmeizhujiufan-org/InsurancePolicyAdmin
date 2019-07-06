@@ -4,8 +4,8 @@ import {resolve} from 'path';
 import customTheme from '../src/utils/customTheme';
 
 export default {
-    // base: '../',
-    // publicPath: '../',
+    base: './',
+    publicPath: './',
     history: 'hash',
     treeShaking: true,
     // 路由配置
@@ -53,20 +53,24 @@ export default {
                         component: './client/clientAdd',
                     }]
                 }, {
-                    path: '/insurancecompany',
-                    name: 'insurancecompany',
+                    path: '/servicedata',
+                    name: 'servicedata',
                     routes: [{
                         name: 'list',
-                        path: '/insurancecompany/list',
-                        component: './insurancecompany/insuranceCompanyList',
+                        path: '/servicedata/list',
+                        component: './servicedata/list',
                     }, {
                         name: 'insurancecompanyEdit',
-                        path: '/insurancecompany/edit/:id',
-                        component: './insurancecompany/$insurancecompanyEdit',
+                        path: '/servicedata/edit/:id',
+                        component: './servicedata/$insurancecompanyEdit',
                     }, {
-                        name: 'add',
-                        path: '/insurancecompany/add',
-                        component: './insurancecompany/insurancecompanyAdd',
+                        name: 'addCompany',
+                        path: '/servicedata/addcompany',
+                        component: './servicedata/insurancecompanyAdd',
+                    }, {
+                        name: 'addChannel',
+                        path: '/servicedata/addchannel',
+                        component: './servicedata/channelAdd',
                     }]
                 }, {
                     path: '/setting',

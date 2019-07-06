@@ -14,7 +14,6 @@ import {Table, Card} from 'zui';
 import {formItemLayout} from 'utils/formItemGrid';
 import '../index.less';
 import {connect} from "dva";
-import Link from "umi/link";
 
 const {TabPane} = Tabs;
 const FormItem = Form.Item;
@@ -194,7 +193,7 @@ class Index extends React.Component {
     }
 
     componentDidMount = () => {
-        const {dispatch, match} = this.props;
+        const {dispatch, match, paramsCustom, paramsOrder} = this.props;
         console.log('detail props = ', this.props);
         const id = match.params.id;
 
@@ -211,14 +210,16 @@ class Index extends React.Component {
         dispatch({
             type: 'userDetail/queryCustomList',
             payload: {
-                userId: id
+                userId: id,
+                ...paramsCustom
             }
         });
 
         dispatch({
             type: 'userDetail/queryOrderList',
             payload: {
-                userId: id
+                userId: id,
+                ...paramsOrder
             }
         });
     }
@@ -373,7 +374,7 @@ class Index extends React.Component {
                                         </Row>
                                     </Form>
                                 </TabPane>
-                                <TabPane tab="客户信息" key="2">
+                                <TabPane tab="客户列表" key="2">
                                     <Table
                                         columns={this.columnsCustom}
                                         dataSource={dataSourceCustom}
@@ -383,7 +384,7 @@ class Index extends React.Component {
                                         handlePageChange={this.handlePageChange}
                                     />
                                 </TabPane>
-                                <TabPane tab="订单信息" key="3">
+                                <TabPane tab="订单列表" key="3">
                                     <Table
                                         columns={this.columnsOrder}
                                         dataSource={dataSourceOrder}

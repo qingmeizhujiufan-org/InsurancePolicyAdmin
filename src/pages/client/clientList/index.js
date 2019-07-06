@@ -1,6 +1,4 @@
 import React from 'react';
-import Link from 'umi/link';
-import PropTypes from 'prop-types';
 import {
     notification,
     Icon,
@@ -29,28 +27,35 @@ class Index extends React.Component {
         this.columns = [
             {
                 title: '客户姓名',
-                width: 200,
+                width: 250,
                 align: 'center',
                 dataIndex: 'customName',
                 key: 'customName',
             }, {
                 title: '性别',
-                width: 80,
+                width: 100,
                 align: 'center',
                 dataIndex: 'customSex',
-                key: 'customSex'
+                key: 'customSex',
+                render: (text, record, index) => (
+                    <span>{text === 1 ? '男' : '女'}</span>
+                )
             }, {
                 title: '客户手机号',
-                width: 150,
+                width: 200,
                 align: 'center',
                 dataIndex: 'customTel',
                 key: 'customTel',
             }, {
                 title: '客户生日',
-                width: 150,
+                width: 200,
                 align: 'center',
                 dataIndex: 'customBirth',
                 key: 'customBirth',
+            }, {
+                title: '备注',
+                dataIndex: 'memo',
+                key: 'memo',
             }, {
                 title: '创建时间',
                 width: 200,
@@ -63,45 +68,13 @@ class Index extends React.Component {
                 align: 'center',
                 dataIndex: 'updated_at',
                 key: 'updated_at'
-            }, {
-                title: '备注',
-                dataIndex: 'memo',
-                key: 'memo',
-            }, {
-                title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
-                key: 'operation',
-                fixed: 'right',
-                width: 180,
-                align: 'center',
-                render: (text, record, index) => (
-                    <div>
-                        {/*<Dropdown*/}
-                        {/*placement="bottomCenter"*/}
-                        {/*overlay={*/}
-                        {/*<Menu>*/}
-                        {/*<Menu.Item>*/}
-                        {/*<Link to={this.onDetail(record.id)}>查看</Link>*/}
-                        {/*</Menu.Item>*/}
-                        {/*<Menu.Item>*/}
-                        {/*<Link to={this.onEdit(record.id)}>编辑</Link>*/}
-                        {/*</Menu.Item>*/}
-                        {/*<Menu.Item>*/}
-                        {/*<a onClick={() => this.onDelete(record.id)}>删除</a>*/}
-                        {/*</Menu.Item>*/}
-                        {/*</Menu>*/}
-                        {/*}*/}
-                        {/*>*/}
-                        {/*<a className="ant-dropdown-link">操作</a>*/}
-                        {/*</Dropdown>*/}
-                    </div>
-                )
             }
         ];
     }
 
 
     componentDidMount = () => {
-        const {dispatch, match} = this.props;
+        const {dispatch} = this.props;
 
         dispatch({
             type: 'clientList/queryCustomList',
@@ -129,14 +102,6 @@ class Index extends React.Component {
         }, () => {
             this.queryList();
         });
-    }
-
-    onDetail = id => {
-        return `/frame/user/list/detail/${id}`
-    }
-
-    onEdit = id => {
-        return `/frame/user/list/edit/${id}`
     }
 
     render() {
@@ -172,7 +137,6 @@ class Index extends React.Component {
                             dataSource={dataSource}
                             pagination={pagination}
                             loading={loading}
-                            scroll={{x: 1500}}
                             handlePageChange={this.handlePageChange}
                         />
                     </Card>

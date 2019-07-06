@@ -1,5 +1,6 @@
 import React from 'react';
 import {connect} from "dva";
+import {routerRedux} from 'dva/router';
 import {Layout, Row, Icon, Dropdown, Menu, Avatar, notification} from 'antd';
 import host from 'host';
 import './index.less';
@@ -47,7 +48,7 @@ class Index extends React.Component {
             message: '提示',
             description: '已安全退出！'
         });
-        this.context.router.push('/login');
+        routerRedux.push('/login');
         // let param = {};
         // param.userId = sessionStorage.userId;
         // ajax.postJSON(logoutUrl, JSON.stringify(param), (data) => {
@@ -67,7 +68,7 @@ class Index extends React.Component {
     render() {
         const {collapsed, user} = this.props;
         const {File, realName, avatarSrc} = user;
-        const avatar = (File && host.FILE_ASSET + `${File.id + File.fileType}`) || avatarSrc;
+        const avatar = avatarSrc;
 
         return (
             <Header className="zui-header">

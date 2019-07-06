@@ -26,12 +26,16 @@ const Menu = [{
     label: '业务数据管理',
     children: [{
         key: '002_1',
-        link: '/insurancecompany/list',
-        label: '保险公司列表'
+        link: '/servicedata/list',
+        label: '业务数据列表'
     }, {
         key: '002_2',
-        link: '/insurancecompany/add',
+        link: '/servicedata/addcompany',
         label: '新增保险公司'
+    }, {
+        key: '002_3',
+        link: '/servicedata/addchannel',
+        label: '新增渠道'
     }]
 }, {
     key: '003',
