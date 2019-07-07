@@ -46,7 +46,7 @@ class DetailForm extends React.Component {
         const {dispatch, form} = this.props;
         const values = form.getFieldsValue();
         values.realName = val.realName;
-        if (val.avatarSrc) {
+        if (val.avatarSrc && val.avatarSrc[0]) {
             const {id, fileType} = val.avatarSrc[0];
             const fileList = [];
             fileList.push({

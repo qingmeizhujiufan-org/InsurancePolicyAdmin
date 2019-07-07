@@ -1,7 +1,6 @@
 import React from 'react';
 import {connect} from 'dva';
 import Link from 'umi/link';
-import {routerRedux} from 'dva/router';
 import {
     notification,
     Icon,
@@ -104,7 +103,6 @@ class Index extends React.Component {
     }
 
     componentDidMount() {
-        // console.log('userList === ', this.props);
         this.queryList();
     }
 

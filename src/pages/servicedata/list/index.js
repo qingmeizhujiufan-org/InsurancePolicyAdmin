@@ -1,16 +1,17 @@
 import React from 'react';
 import router from 'umi/router';
+import Link from 'umi/link';
 import {
     Icon,
     Breadcrumb,
     Row,
     Col,
     Input,
-    Modal,
-    Button
+    Button,
+    Menu,
+    Dropdown, Modal, notification, message
 } from 'antd';
 import {Table, Card} from 'zui';
-import assign from 'lodash/assign';
 import '../index.less';
 import {connect} from "dva";
 
@@ -58,26 +59,21 @@ class Index extends React.Component {
                 width: 180,
                 align: 'center',
                 render: (text, record, index) => (
-                    <div>
-                        {/*<Dropdown*/}
-                        {/*placement="bottomCenter"*/}
-                        {/*overlay={*/}
-                        {/*<Menu>*/}
-                        {/*<Menu.Item>*/}
-                        {/*<Link to={this.onDetail(record.id)}>查看</Link>*/}
-                        {/*</Menu.Item>*/}
-                        {/*<Menu.Item>*/}
-                        {/*<Link to={this.onEdit(record.id)}>编辑</Link>*/}
-                        {/*</Menu.Item>*/}
-                        {/*<Menu.Item>*/}
-                        {/*<a onClick={() => this.onDelete(record.id)}>删除</a>*/}
-                        {/*</Menu.Item>*/}
-                        {/*</Menu>*/}
-                        {/*}*/}
-                        {/*>*/}
-                        {/*<a className="ant-dropdown-link">操作</a>*/}
-                        {/*</Dropdown>*/}
-                    </div>
+                    <Dropdown
+                        placement="bottomCenter"
+                        overlay={
+                            <Menu>
+                                <Menu.Item>
+                                    <Link to={this.onEdit(record.id)}>编辑</Link>
+                                </Menu.Item>
+                                <Menu.Item>
+                                    <a onClick={() => this.onDelete(record.id, 'company')}>删除</a>
+                                </Menu.Item>
+                            </Menu>
+                        }
+                    >
+                        <a className="ant-dropdown-link">操作</a>
+                    </Dropdown>
                 )
             }
         ];
@@ -113,8 +109,21 @@ class Index extends React.Component {
                 width: 180,
                 align: 'center',
                 render: (text, record, index) => (
-                    <div>
-                    </div>
+                    <Dropdown
+                        placement="bottomCenter"
+                        overlay={
+                            <Menu>
+                                <Menu.Item>
+                                    <Link to={this.onEdit(record.id)}>编辑</Link>
+                                </Menu.Item>
+                                <Menu.Item>
+                                    <a onClick={() => this.onDelete(record.id, 'channel')}>删除</a>
+                                </Menu.Item>
+                            </Menu>
+                        }
+                    >
+                        <a className="ant-dropdown-link">操作</a>
+                    </Dropdown>
                 )
             }
         ];
@@ -182,6 +191,17 @@ class Index extends React.Component {
 
     onEdit = id => {
         return `/frame/user/list/edit/${id}`
+    }
+
+    onDelete = id => {
+        Modal.confirm({
+            title: '提示',
+            content: '确认要删除吗？',
+            okText: '确认',
+            cancelText: '取消',
+            onOk: () => {
+            }
+        });
     }
 
     render() {

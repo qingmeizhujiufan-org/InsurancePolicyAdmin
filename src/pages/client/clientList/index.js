@@ -1,4 +1,6 @@
 import React from 'react';
+import router from 'umi/router';
+import {connect} from "dva";
 import {
     notification,
     Icon,
@@ -10,12 +12,12 @@ import {
     Row,
     Col,
     Input,
-    Modal
+    Modal, Button
 } from 'antd';
 import {Table, Card} from 'zui';
 import assign from 'lodash/assign';
 import '../index.less';
-import {connect} from "dva";
+
 
 const Search = Input.Search;
 
@@ -126,6 +128,14 @@ class Index extends React.Component {
                                     size="large"
                                     onSearch={this.onSearch}
                                 />
+                            </Col>
+                            <Col span={3}>
+                                <Button
+                                    icon='plus'
+                                    size="large"
+                                    onClick={() => router.push('/client/add')}
+                                    style={{marginLeft: 25}}
+                                >新增客户</Button>
                             </Col>
                         </Row>
                     </div>
