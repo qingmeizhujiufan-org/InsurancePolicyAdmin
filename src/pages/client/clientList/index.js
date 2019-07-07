@@ -94,15 +94,11 @@ class Index extends React.Component {
 
     // 搜索
     onSearch = (value, event) => {
-        console.log('onsearch value == ', value);
-        this.setState({
-            params: {
-                pageNumber: 1,
-                pageSize: 10,
-            },
-            keyWords: value
-        }, () => {
-            this.queryList();
+        const {dispatch} = this.props;
+
+        dispatch({
+            type: 'clientList/onSearch',
+            payload: {keyWords: value}
         });
     }
 

@@ -40,9 +40,18 @@ const Menu = [{
 }, {
     key: '003',
     iconType: 'setting',
-    label: '个人设置',
+    label: '外部链接管理',
     children: [{
         key: '003_1',
+        link: '/outerlink',
+        label: '外部链接'
+    }]
+}, {
+    key: '004',
+    iconType: 'setting',
+    label: '个人设置',
+    children: [{
+        key: '004_1',
         link: '/setting/userCenter',
         label: '个人中心'
     }]

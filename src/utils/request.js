@@ -4,6 +4,7 @@
  */
 import {extend} from 'umi-request';
 import {notification} from 'antd';
+import host from 'host';
 
 const codeMessage = {
     200: '服务器成功返回请求的数据。',
@@ -41,7 +42,7 @@ const errorHandler = (error) => {
  * 配置request请求时的默认参数
  */
 const request = extend({
-    prefix: 'http://127.0.0.1:7001/api',
+    prefix: host.BASE_HOST,
     credentials: 'include', // 默认请求是否带上cookie,
     errorHandler, // 默认错误处理
 });

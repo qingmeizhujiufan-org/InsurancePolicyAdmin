@@ -1,6 +1,5 @@
-import {routerRedux} from 'dva/router';
-import {queryInsuranceCompanyList, queryChannelList} from './service';
-import {message} from "antd";
+import {queryInsuranceCompanyList, queryChannelList, delCompany, delChannel} from './service';
+import {message, notification} from "antd";
 import {pathMatchRegexp} from 'utils/util';
 
 export default {
@@ -28,11 +27,13 @@ export default {
     effects: {
         /* 查询保险公司列表 */
         * queryInsuranceCompanyList({payload}, {put, call, select}) {
+            yield put({type: 'setState', payload: {loading_1: true}});
             const data = yield call(queryInsuranceCompanyList, payload);
+            yield put({type: 'setState', payload: {loading_1: false}});
             if (data.success) {
-                const backData = data.backData || [];
+                const backData = data.backData;
                 const content = backData.content;
-                const total = backData.length;
+                const total = backData.totalElements;
                 yield put({
                     type: 'setState',
                     payload: {
@@ -47,11 +48,13 @@ export default {
 
         /* 查询渠道列表 */
         * queryChannelList({payload}, {put, call, select}) {
+            yield put({type: 'setState', payload: {loading_2: true}});
             const data = yield call(queryChannelList, payload);
+            yield put({type: 'setState', payload: {loading_2: false}});
             if (data.success) {
-                const backData = data.backData || [];
+                const backData = data.backData;
                 const content = backData.content;
-                const total = backData.length;
+                const total = backData.totalElements;
                 yield put({
                     type: 'setState',
                     payload: {
@@ -106,6 +109,49 @@ export default {
                         keyWords: keyWords_2
                     }
                 });
+            }
+        },
+
+        /* 删除 */
+        * delete({payload}, {put, call, select}) {
+            const {id, type} = payload;
+
+            if (type === 'company') {
+                const data = yield call(delCompany, {id});
+                if (data.success) {
+                    yield put({
+                        type: 'onSearch',
+                        payload: {
+                            keyWords_1: '',
+                            type
+                        }
+                    });
+
+                    notification.success({
+                        message: '提示',
+                        description: '删除保险公司成功！'
+                    });
+                } else {
+                    message.error(data.backMsg);
+                }
+            } else if (type === 'channel') {
+                const data = yield call(delChannel, {id});
+                if (data.success) {
+                    yield put({
+                        type: 'onSearch',
+                        payload: {
+                            keyWords_2: '',
+                            type
+                        }
+                    });
+
+                    notification.success({
+                        message: '提示',
+                        description: '删除渠道成功！'
+                    });
+                } else {
+                    message.error(data.backMsg);
+                }
             }
         },
     },

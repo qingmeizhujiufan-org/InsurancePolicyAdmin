@@ -86,9 +86,9 @@ class Index extends React.Component {
                                     <Menu.Item>
                                         <Link to={this.onDetail(record.id)}>查看</Link>
                                     </Menu.Item>
-                                    <Menu.Item>
-                                        <Link to={this.onEdit(record.id)}>编辑</Link>
-                                    </Menu.Item>
+                                    {/*<Menu.Item>*/}
+                                        {/*<Link to={this.onEdit(record.id)}>编辑</Link>*/}
+                                    {/*</Menu.Item>*/}
                                     <Menu.Item>
                                         <a onClick={() => this.onDelete(record.id)}>删除</a>
                                     </Menu.Item>

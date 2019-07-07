@@ -53,7 +53,7 @@ export default {
                 }
             });
             yield put({
-                type: 'queryList',
+                type: 'queryCustomList',
                 payload: {
                     pageNumber: 1,
                     pageSize: 10,

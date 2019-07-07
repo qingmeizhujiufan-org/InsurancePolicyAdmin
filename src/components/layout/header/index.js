@@ -1,7 +1,8 @@
 import React from 'react';
 import {connect} from "dva";
-import {routerRedux} from 'dva/router';
+import router from 'umi/router';
 import {Layout, Row, Icon, Dropdown, Menu, Avatar, notification} from 'antd';
+import store from 'store';
 import host from 'host';
 import './index.less';
 
@@ -44,11 +45,12 @@ class Index extends React.Component {
 
     logout = () => {
         sessionStorage.clear();
+        store.clearAll();
         notification.success({
             message: '提示',
             description: '已安全退出！'
         });
-        routerRedux.push('/login');
+        router.push('/login');
         // let param = {};
         // param.userId = sessionStorage.userId;
         // ajax.postJSON(logoutUrl, JSON.stringify(param), (data) => {

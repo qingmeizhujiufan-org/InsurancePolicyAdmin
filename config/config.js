@@ -73,6 +73,10 @@ export default {
                         component: './servicedata/channelAdd',
                     }]
                 }, {
+                    path: '/outerlink',
+                    name: 'outerLink',
+                    component: './servicedata/outerlink',
+                }, {
                     path: '/setting',
                     name: 'setting',
                     routes: [{

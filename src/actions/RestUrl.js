@@ -10,7 +10,7 @@ const FILE_SERVER = 'http://www.xuecheh.com';
 
 module.exports = {
     ADDR,
-    BASE_HOST: ADDR + '/api/',
+    BASE_HOST: ADDR + '/api',
     FILE_UPLOAD_HOST: FILE_SERVER + '/api/',
     FILE_ASSET: FILE_SERVER + '/public/',
 };

@@ -9,11 +9,13 @@ import {
     Input,
     Button,
     Menu,
-    Dropdown, Modal, notification, message
+    Dropdown,
+    Modal
 } from 'antd';
 import {Table, Card} from 'zui';
-import '../index.less';
 import {connect} from "dva";
+import _assign from 'lodash/assign';
+import '../index.less';
 
 const Search = Input.Search;
 
@@ -63,11 +65,11 @@ class Index extends React.Component {
                         placement="bottomCenter"
                         overlay={
                             <Menu>
+                                {/*<Menu.Item>*/}
+                                {/*<Link to={this.onEdit(record.id)}>编辑</Link>*/}
+                                {/*</Menu.Item>*/}
                                 <Menu.Item>
-                                    <Link to={this.onEdit(record.id)}>编辑</Link>
-                                </Menu.Item>
-                                <Menu.Item>
-                                    <a onClick={() => this.onDelete(record.id, 'company')}>删除</a>
+                                    <a onClick={() => this.onDelete(record, 'company')}>删除</a>
                                 </Menu.Item>
                             </Menu>
                         }
@@ -113,11 +115,11 @@ class Index extends React.Component {
                         placement="bottomCenter"
                         overlay={
                             <Menu>
+                                {/*<Menu.Item>*/}
+                                {/*<Link to={this.onEdit(record.id)}>编辑</Link>*/}
+                                {/*</Menu.Item>*/}
                                 <Menu.Item>
-                                    <Link to={this.onEdit(record.id)}>编辑</Link>
-                                </Menu.Item>
-                                <Menu.Item>
-                                    <a onClick={() => this.onDelete(record.id, 'channel')}>删除</a>
+                                    <a onClick={() => this.onDelete(record, 'channel')}>删除</a>
                                 </Menu.Item>
                             </Menu>
                         }
@@ -131,32 +133,44 @@ class Index extends React.Component {
 
 
     componentDidMount = () => {
-        const {dispatch} = this.props;
+        const {
+            dispatch,
+            params_1,
+            params_2,
+            keyWords_1,
+            keyWords_2
+        } = this.props;
 
         dispatch({
             type: 'list/queryInsuranceCompanyList',
-            payload: {}
+            payload: {
+                ...params_1,
+                keyWords: keyWords_1
+            }
         });
 
         dispatch({
             type: 'list/queryChannelList',
-            payload: {}
+            payload: {
+                ...params_2,
+                keyWords: keyWords_2
+            }
         });
     }
 
     // 处理分页变化
     handlePageChange = (param, type) => {
-        const {dispatch, params, keyWords} = this.props;
+        const {dispatch, params_1, params_2, keyWords_1, keyWords_2} = this.props;
 
         if (type === 'company') {
-            const payload = _assign({}, params, param, {keyWords});
+            const payload = _assign({}, {...params_1}, param, {keyWords_1});
 
             dispatch({
                 type: 'list/queryInsuranceCompanyList',
                 payload
             });
         } else if (type === 'channel') {
-            const payload = _assign({}, params, param, {keyWords});
+            const payload = _assign({}, {...params_2}, param, {keyWords_2});
 
             dispatch({
                 type: 'list/queryChannelList',
@@ -193,13 +207,28 @@ class Index extends React.Component {
         return `/frame/user/list/edit/${id}`
     }
 
-    onDelete = id => {
+    onDelete = (record, type) => {
+        const {dispatch} = this.props;
+        let content = '';
+        if (type === 'company') {
+            content = `确认要删除【保险公司】${record.companyName} 吗`;
+        } else {
+            content = `确认要删除【渠道】${record.channelName} 吗`;
+        }
+
         Modal.confirm({
             title: '提示',
-            content: '确认要删除吗？',
+            content: content,
             okText: '确认',
             cancelText: '取消',
             onOk: () => {
+                dispatch({
+                    type: 'list/delete',
+                    payload: {
+                        id: record.id,
+                        type
+                    }
+                });
             }
         });
     }
@@ -250,7 +279,7 @@ class Index extends React.Component {
                                         pagination={pagination_1}
                                         loading={loading_1}
                                         scroll={{x: 1100}}
-                                        handlePageChange={() => this.handlePageChange()}
+                                        handlePageChange={param => this.handlePageChange(param, 'company')}
                                     />
                                 </Card>
                             </Col>
@@ -275,7 +304,7 @@ class Index extends React.Component {
                                         pagination={pagination_2}
                                         loading={loading_2}
                                         scroll={{x: 1100}}
-                                        handlePageChange={() => this.handlePageChange()}
+                                        handlePageChange={param => this.handlePageChange(param, 'channel')}
                                     />
                                 </Card>
                             </Col>
