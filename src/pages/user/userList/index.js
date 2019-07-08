@@ -29,29 +29,23 @@ class Index extends React.Component {
 
         this.columns = [
             {
-                title: '昵称',
-                width: 200,
+                title: '姓名',
+                width: 350,
                 align: 'center',
-                dataIndex: 'nickname',
-                key: 'nickname',
+                dataIndex: 'realname',
+                key: 'realname',
                 render: (text, record, index) => (
                     <Link to={this.onDetail(record.id)}>{text}</Link>
                 )
             }, {
-                title: '真实姓名',
-                width: 200,
-                align: 'center',
-                dataIndex: 'realname',
-                key: 'realname',
-            }, {
                 title: '个人手机号',
-                width: 150,
+                width: 200,
                 align: 'center',
                 dataIndex: 'telephone',
                 key: 'telephone',
             }, {
                 title: '生日',
-                width: 150,
+                width: 200,
                 align: 'center',
                 dataIndex: 'birthday',
                 key: 'birthday'
@@ -89,9 +83,9 @@ class Index extends React.Component {
                                     {/*<Menu.Item>*/}
                                         {/*<Link to={this.onEdit(record.id)}>编辑</Link>*/}
                                     {/*</Menu.Item>*/}
-                                    <Menu.Item>
-                                        <a onClick={() => this.onDelete(record.id)}>删除</a>
-                                    </Menu.Item>
+                                    {/*<Menu.Item>*/}
+                                        {/*<a onClick={() => this.onDelete(record.id)}>删除</a>*/}
+                                    {/*</Menu.Item>*/}
                                 </Menu>
                             }
                         >

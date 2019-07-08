@@ -27,7 +27,7 @@ class Index extends React.Component {
         this.columnsCustom = [
             {
                 title: '客户姓名',
-                width: 200,
+                width: 350,
                 align: 'center',
                 dataIndex: 'customName',
                 key: 'customName',
@@ -36,7 +36,10 @@ class Index extends React.Component {
                 width: 80,
                 align: 'center',
                 dataIndex: 'customSex',
-                key: 'customSex'
+                key: 'customSex',
+                render: text => (
+                    <span>{text === 1 ? '男' : '女'}</span>
+                )
             }, {
                 title: '客户手机号',
                 width: 150,
@@ -65,34 +68,34 @@ class Index extends React.Component {
                 title: '备注',
                 dataIndex: 'memo',
                 key: 'memo',
-            }, {
-                title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
-                key: 'operation',
-                fixed: 'right',
-                width: 180,
-                align: 'center',
-                render: (text, record, index) => (
-                    <div>
-                        {/*<Dropdown*/}
-                        {/*placement="bottomCenter"*/}
-                        {/*overlay={*/}
-                        {/*<Menu>*/}
-                        {/*<Menu.Item>*/}
-                        {/*<Link to={this.onDetail(record.id)}>查看</Link>*/}
-                        {/*</Menu.Item>*/}
-                        {/*<Menu.Item>*/}
-                        {/*<Link to={this.onEdit(record.id)}>编辑</Link>*/}
-                        {/*</Menu.Item>*/}
-                        {/*<Menu.Item>*/}
-                        {/*<a onClick={() => this.onDelete(record.id)}>删除</a>*/}
-                        {/*</Menu.Item>*/}
-                        {/*</Menu>*/}
-                        {/*}*/}
-                        {/*>*/}
-                        {/*<a className="ant-dropdown-link">操作</a>*/}
-                        {/*</Dropdown>*/}
-                    </div>
-                )
+            // }, {
+            //     title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
+            //     key: 'operation',
+            //     fixed: 'right',
+            //     width: 180,
+            //     align: 'center',
+            //     render: (text, record, index) => (
+            //         <div>
+            //             <Dropdown
+            //             placement="bottomCenter"
+            //             overlay={
+            //             <Menu>
+            //             <Menu.Item>
+            //             <Link to={this.onDetail(record.id)}>查看</Link>
+            //             </Menu.Item>
+            //             <Menu.Item>
+            //             <Link to={this.onEdit(record.id)}>编辑</Link>
+            //             </Menu.Item>
+            //             <Menu.Item>
+            //             <a onClick={() => this.onDelete(record.id)}>删除</a>
+            //             </Menu.Item>
+            //             </Menu>
+            //             }
+            //             >
+            //             <a className="ant-dropdown-link">操作</a>
+            //             </Dropdown>
+            //         </div>
+            //     )
             }];
 
         this.columnsOrder = [
@@ -105,16 +108,16 @@ class Index extends React.Component {
                 key: 'insurancePolicyNo',
             }, {
                 title: '险种',
-                width: 80,
+                width: 200,
                 align: 'center',
                 dataIndex: 'insuranceName',
                 key: 'insuranceName'
             }, {
                 title: '保险公司',
-                width: 150,
+                width: 250,
                 align: 'center',
-                dataIndex: 'insuranceCompany',
-                key: 'insuranceCompany',
+                dataIndex: 'insuranceCompanyName',
+                key: 'insuranceCompanyName',
             }, {
                 title: '投保时间',
                 width: 150,
@@ -143,8 +146,8 @@ class Index extends React.Component {
                 title: '订单渠道',
                 width: 150,
                 align: 'center',
-                dataIndex: 'orderChannel',
-                key: 'orderChannel',
+                dataIndex: 'channelName',
+                key: 'channelName',
             }, {
                 title: '创建时间',
                 width: 200,
@@ -161,34 +164,34 @@ class Index extends React.Component {
                 title: '备注',
                 dataIndex: 'memo',
                 key: 'memo',
-            }, {
-                title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
-                key: 'operation',
-                fixed: 'right',
-                width: 180,
-                align: 'center',
-                render: (text, record, index) => (
-                    <div>
-                        {/*<Dropdown*/}
-                        {/*placement="bottomCenter"*/}
-                        {/*overlay={*/}
-                        {/*<Menu>*/}
-                        {/*<Menu.Item>*/}
-                        {/*<Link to={this.onDetail(record.id)}>查看</Link>*/}
-                        {/*</Menu.Item>*/}
-                        {/*<Menu.Item>*/}
-                        {/*<Link to={this.onEdit(record.id)}>编辑</Link>*/}
-                        {/*</Menu.Item>*/}
-                        {/*<Menu.Item>*/}
-                        {/*<a onClick={() => this.onDelete(record.id)}>删除</a>*/}
-                        {/*</Menu.Item>*/}
-                        {/*</Menu>*/}
-                        {/*}*/}
-                        {/*>*/}
-                        {/*<a className="ant-dropdown-link">操作</a>*/}
-                        {/*</Dropdown>*/}
-                    </div>
-                )
+            // }, {
+            //     title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
+            //     key: 'operation',
+            //     fixed: 'right',
+            //     width: 180,
+            //     align: 'center',
+            //     render: (text, record, index) => (
+            //         <div>
+            //             <Dropdown
+            //             placement="bottomCenter"
+            //             overlay={
+            //             <Menu>
+            //             <Menu.Item>
+            //             <Link to={this.onDetail(record.id)}>查看</Link>
+            //             </Menu.Item>
+            //             <Menu.Item>
+            //             <Link to={this.onEdit(record.id)}>编辑</Link>
+            //             </Menu.Item>
+            //             <Menu.Item>
+            //             <a onClick={() => this.onDelete(record.id)}>删除</a>
+            //             </Menu.Item>
+            //             </Menu>
+            //             }
+            //             >
+            //             <a className="ant-dropdown-link">操作</a>
+            //             </Dropdown>
+            //         </div>
+            //     )
             }];
     }
 
@@ -390,7 +393,7 @@ class Index extends React.Component {
                                         dataSource={dataSourceOrder}
                                         pagination={paginationOrder}
                                         loading={loading}
-                                        scroll={{x: 2500}}
+                                        scroll={{x: 2200}}
                                         handlePageChange={this.handlePageChange}
                                     />
                                 </TabPane>

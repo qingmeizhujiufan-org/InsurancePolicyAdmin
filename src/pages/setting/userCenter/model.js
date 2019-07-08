@@ -32,6 +32,22 @@ export default {
                     }
                 });
 
+                //修改全局头像
+                if (backData.avatarSrc && backData.avatarSrc[0]) {
+                    const {user} = yield select(state => state.app);
+                    const {id, fileType} = backData.avatarSrc[0];
+                    yield put({
+                        type: 'app/saveUserInfo',
+                        payload: {
+                            ...user,
+                            File: {
+                                id,
+                                fileType
+                            }
+                        }
+                    });
+                }
+
                 if (callback && typeof callback === 'function') callback(backData);
             } else {
                 message.error('查询失败');
@@ -39,21 +55,29 @@ export default {
         },
 
         /* 更新用户信息 */
-        * update({payload}, {put, call, select}) {
-            const {user, ...params} = payload;
-            yield put({type: 'setState', payload: {submitLoading: true}});
-            const data = yield call(update, params);
-            yield put({type: 'setState', payload: {submitLoading: false}});
+        * update({payload, callback}, {put, call, select}) {
+            yield put({
+                type: 'setState', payload: {
+                    submitLoading: true,
+                    submitLoadingPwd: true
+                }
+            });
+            const data = yield call(update, payload);
+            yield put({
+                type: 'setState', payload: {
+                    submitLoading: false,
+                    submitLoadingPwd: false
+                }
+            });
             if (data.success) {
-                yield put({
-                    type: 'app/saveUserInfo',
-                    payload: user
-                });
-
                 notification.success({
                     message: '提示',
                     description: '个人信息更新成功！'
                 });
+
+                if (callback && typeof callback === 'function') {
+                    callback();
+                }
             } else {
                 message.error(data.backMsg);
             }

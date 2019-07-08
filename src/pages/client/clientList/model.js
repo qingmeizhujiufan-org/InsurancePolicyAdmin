@@ -20,8 +20,10 @@ export default {
     effects: {
         /* 查询所有客户列表 */
         * queryCustomList({payload}, {put, call, select}) {
-            console.log('queryList payload == ', payload);
+            yield put({type: 'setState', payload: {loading: true}});
             const data = yield call(queryCustomList, payload);
+            yield put({type: 'setState', payload: {loading: false}});
+
             if (data.success) {
                 const backData = data.backData || [];
                 const content = backData.content;

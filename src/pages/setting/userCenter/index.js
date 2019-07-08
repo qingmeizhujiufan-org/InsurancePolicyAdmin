@@ -28,7 +28,12 @@ const TabPane = Tabs.TabPane;
 })
 @Form.create()
 class DetailForm extends React.Component {
+
     componentDidMount = () => {
+        this.queryUserInfo();
+    }
+
+    queryUserInfo = () => {
         const {dispatch, user} = this.props;
 
         dispatch({
@@ -91,13 +96,9 @@ class DetailForm extends React.Component {
 
                 dispatch({
                     type: 'userCenter/update',
-                    payload: {
-                        ...values,
-                        user: {
-                            ...user,
-                            realName: values.realName,
-                            avatarSrc: fileList[0] && fileList[0].thumbUrl
-                        }
+                    payload: values,
+                    callback: () => {
+                        this.queryUserInfo();
                     }
                 });
             }
@@ -156,20 +157,21 @@ class DetailForm extends React.Component {
     }
 }
 
-class PasswordForm extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            submitLoading: false
-        };
+@connect((state) => {
+    return {
+        user: state.app.user,
+        ...state.userCenter
     }
+})
+@Form.create()
+class PasswordForm extends React.Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                const data = this.props.data;
-                if (values.oldPassword !== data.password) {
+                const {dispatch, user} = this.props;
+                if (values.oldPassword !== user.password) {
                     message.error('旧密码不对，请重新填写');
                     return;
                 }
@@ -177,31 +179,31 @@ class PasswordForm extends React.Component {
                     message.error('新密码位数不能少于6位');
                     return;
                 }
-                this.setState({
-                    submitLoading: true
-                });
-                axios.post('admin/updateUser', {
-                    id: sessionStorage.userId,
-                    password: values.newPassword
-                }).then(res => res.data).then(data => {
-                    if (data.success) {
-                        notification.success({
-                            message: '提示',
-                            description: '用户密码更新成功！'
+
+                dispatch({
+                    type: 'userCenter/update',
+                    payload: {
+                        id: user.id,
+                        password: values.newPassword
+                    },
+                    callback: () => {
+                        dispatch({
+                            type: 'app/saveUserInfo',
+                            payload: {
+                                ...user,
+                                password: values.newPassword
+                            }
                         });
-                        sessionStorage.setItem('avatar', avatarSrc[0].thumbUrl);
-                        this.queryDetail();
-                    } else {
-                        message.error(data.backMsg);
                     }
-                }).finally(() => this.setState({submitLoading: false}));
+                });
             }
         });
     }
 
     render() {
-        const {getFieldDecorator} = this.props.form;
-        const {submitLoading} = this.state;
+        const {form, submitLoadingPwd} = this.props;
+        const {getFieldDecorator} = form;
+
         return (
             <Form onSubmit={this.handleSubmit}>
                 <Row type="flex" justify="center" style={{marginTop: 40}}>
@@ -234,7 +236,7 @@ class PasswordForm extends React.Component {
                 </Row>
                 <Row type="flex" justify="center" style={{marginTop: 40}}>
                     <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
-                            loading={submitLoading}>保存</Button>
+                            loading={submitLoadingPwd}>保存</Button>
                 </Row>
             </Form>
         )

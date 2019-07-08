@@ -17,11 +17,11 @@ class Index extends React.Component {
 
         this.menu = (
             <Menu>
-                <Menu.Item>
-                    <span onClick={this.goUserCenter}>个人中心</span>
+                <Menu.Item onClick={this.goUserCenter}>
+                    <span>个人中心</span>
                 </Menu.Item>
-                <Menu.Item>
-                    <span onClick={this.logout}>退出登录</span>
+                <Menu.Item onClick={this.logout}>
+                    <span>退出登录</span>
                 </Menu.Item>
             </Menu>
         );
@@ -32,7 +32,7 @@ class Index extends React.Component {
     }
 
     goUserCenter = () => {
-        this.context.router.push('/setting/list/');
+        router.push('/setting/userCenter');
     }
 
     onToggleClick = () => {
@@ -69,8 +69,8 @@ class Index extends React.Component {
 
     render() {
         const {collapsed, user} = this.props;
-        const {File, realName, avatarSrc} = user;
-        const avatar = avatarSrc;
+        const {File, realName} = user;
+        const avatar = File && `${host.FILE_ASSET}${File.id}${File.fileType}`;
 
         return (
             <Header className="zui-header">

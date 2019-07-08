@@ -1,6 +1,6 @@
 const Menu = [{
     key: '000',
-    iconType: 'idcard',
+    iconType: 'bank',
     label: '业务员管理',
     children: [{
         key: '000_1',
@@ -9,7 +9,7 @@ const Menu = [{
     }]
 }, {
     key: '001',
-    iconType: 'setting',
+    iconType: 'usergroup-add',
     label: '客户管理',
     children: [{
         key: '001_1',
@@ -22,7 +22,7 @@ const Menu = [{
     }]
 }, {
     key: '002',
-    iconType: 'idcard',
+    iconType: 'appstore',
     label: '业务数据管理',
     children: [{
         key: '002_1',
@@ -39,7 +39,7 @@ const Menu = [{
     }]
 }, {
     key: '003',
-    iconType: 'setting',
+    iconType: 'fork',
     label: '外部链接管理',
     children: [{
         key: '003_1',
