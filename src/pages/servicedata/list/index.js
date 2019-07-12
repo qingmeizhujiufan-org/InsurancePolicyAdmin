@@ -33,7 +33,7 @@ class Index extends React.Component {
                 key: 'companyName'
             }, {
                 title: '热线电话',
-                width: 120,
+                width: 200,
                 align: 'center',
                 dataIndex: 'hotLine',
                 key: 'hotLine',
@@ -65,9 +65,9 @@ class Index extends React.Component {
                         placement="bottomCenter"
                         overlay={
                             <Menu>
-                                {/*<Menu.Item>*/}
-                                {/*<Link to={this.onEdit(record.id)}>编辑</Link>*/}
-                                {/*</Menu.Item>*/}
+                                <Menu.Item>
+                                    <Link to={this.onEdit(record.id, 'company')}>编辑</Link>
+                                </Menu.Item>
                                 <Menu.Item>
                                     <a onClick={() => this.onDelete(record, 'company')}>删除</a>
                                 </Menu.Item>
@@ -115,9 +115,9 @@ class Index extends React.Component {
                         placement="bottomCenter"
                         overlay={
                             <Menu>
-                                {/*<Menu.Item>*/}
-                                {/*<Link to={this.onEdit(record.id)}>编辑</Link>*/}
-                                {/*</Menu.Item>*/}
+                                <Menu.Item>
+                                    <Link to={this.onEdit(record.id, 'channel')}>编辑</Link>
+                                </Menu.Item>
                                 <Menu.Item>
                                     <a onClick={() => this.onDelete(record, 'channel')}>删除</a>
                                 </Menu.Item>
@@ -203,8 +203,12 @@ class Index extends React.Component {
         }
     }
 
-    onEdit = id => {
-        return `/frame/user/list/edit/${id}`
+    onEdit = (id, type) => {
+        if (type === 'company') {
+            return `/servicedata/list/editcompany/${id}`
+        } else {
+            return `/servicedata/list/editchannel/${id}`
+        }
     }
 
     onDelete = (record, type) => {
@@ -303,7 +307,7 @@ class Index extends React.Component {
                                         dataSource={dataSource_2}
                                         pagination={pagination_2}
                                         loading={loading_2}
-                                        scroll={{x: 1100}}
+                                        scroll={{x: 900}}
                                         handlePageChange={param => this.handlePageChange(param, 'channel')}
                                     />
                                 </Card>

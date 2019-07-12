@@ -35,6 +35,14 @@ export default {
                         name: 'userEdit',
                         path: '/user/edit/:id',
                         component: './user/$userEdit',
+                    }, {
+                        name: 'clientAdd',
+                        path: '/user/list/addClient/:id',
+                        component: './client/clientAdd',
+                    }, {
+                        name: 'orderAdd',
+                        path: '/user/list/addOrder/:id',
+                        component: './order/orderAdd',
                     }]
                 }, {
                     path: '/client',
@@ -47,10 +55,6 @@ export default {
                         name: 'clientEdit',
                         path: '/client/edit/:id',
                         component: './client/$clientEdit',
-                    }, {
-                        name: 'add',
-                        path: '/client/add',
-                        component: './client/clientAdd',
                     }]
                 }, {
                     path: '/servicedata',
@@ -61,8 +65,12 @@ export default {
                         component: './servicedata/list',
                     }, {
                         name: 'insurancecompanyEdit',
-                        path: '/servicedata/edit/:id',
+                        path: '/servicedata/list/editcompany/:id',
                         component: './servicedata/$insurancecompanyEdit',
+                    }, {
+                        name: 'channelEdit',
+                        path: '/servicedata/list/editchannel/:id',
+                        component: './servicedata/$channelEdit',
                     }, {
                         name: 'addCompany',
                         path: '/servicedata/addcompany',

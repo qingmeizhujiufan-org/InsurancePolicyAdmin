@@ -1,4 +1,6 @@
 import React from 'react';
+import {connect} from "dva";
+import router from "umi/router";
 import {
     Form,
     Input,
@@ -8,12 +10,11 @@ import {
     Col,
     Tabs,
     Spin,
-    Icon,
+    Icon, Button,
 } from 'antd';
 import {Table, Card} from 'zui';
 import {formItemLayout} from 'utils/formItemGrid';
 import '../index.less';
-import {connect} from "dva";
 
 const {TabPane} = Tabs;
 const FormItem = Form.Item;
@@ -68,34 +69,34 @@ class Index extends React.Component {
                 title: '备注',
                 dataIndex: 'memo',
                 key: 'memo',
-            // }, {
-            //     title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
-            //     key: 'operation',
-            //     fixed: 'right',
-            //     width: 180,
-            //     align: 'center',
-            //     render: (text, record, index) => (
-            //         <div>
-            //             <Dropdown
-            //             placement="bottomCenter"
-            //             overlay={
-            //             <Menu>
-            //             <Menu.Item>
-            //             <Link to={this.onDetail(record.id)}>查看</Link>
-            //             </Menu.Item>
-            //             <Menu.Item>
-            //             <Link to={this.onEdit(record.id)}>编辑</Link>
-            //             </Menu.Item>
-            //             <Menu.Item>
-            //             <a onClick={() => this.onDelete(record.id)}>删除</a>
-            //             </Menu.Item>
-            //             </Menu>
-            //             }
-            //             >
-            //             <a className="ant-dropdown-link">操作</a>
-            //             </Dropdown>
-            //         </div>
-            //     )
+                // }, {
+                //     title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
+                //     key: 'operation',
+                //     fixed: 'right',
+                //     width: 180,
+                //     align: 'center',
+                //     render: (text, record, index) => (
+                //         <div>
+                //             <Dropdown
+                //             placement="bottomCenter"
+                //             overlay={
+                //             <Menu>
+                //             <Menu.Item>
+                //             <Link to={this.onDetail(record.id)}>查看</Link>
+                //             </Menu.Item>
+                //             <Menu.Item>
+                //             <Link to={this.onEdit(record.id)}>编辑</Link>
+                //             </Menu.Item>
+                //             <Menu.Item>
+                //             <a onClick={() => this.onDelete(record.id)}>删除</a>
+                //             </Menu.Item>
+                //             </Menu>
+                //             }
+                //             >
+                //             <a className="ant-dropdown-link">操作</a>
+                //             </Dropdown>
+                //         </div>
+                //     )
             }];
 
         this.columnsOrder = [
@@ -164,34 +165,34 @@ class Index extends React.Component {
                 title: '备注',
                 dataIndex: 'memo',
                 key: 'memo',
-            // }, {
-            //     title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
-            //     key: 'operation',
-            //     fixed: 'right',
-            //     width: 180,
-            //     align: 'center',
-            //     render: (text, record, index) => (
-            //         <div>
-            //             <Dropdown
-            //             placement="bottomCenter"
-            //             overlay={
-            //             <Menu>
-            //             <Menu.Item>
-            //             <Link to={this.onDetail(record.id)}>查看</Link>
-            //             </Menu.Item>
-            //             <Menu.Item>
-            //             <Link to={this.onEdit(record.id)}>编辑</Link>
-            //             </Menu.Item>
-            //             <Menu.Item>
-            //             <a onClick={() => this.onDelete(record.id)}>删除</a>
-            //             </Menu.Item>
-            //             </Menu>
-            //             }
-            //             >
-            //             <a className="ant-dropdown-link">操作</a>
-            //             </Dropdown>
-            //         </div>
-            //     )
+                // }, {
+                //     title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
+                //     key: 'operation',
+                //     fixed: 'right',
+                //     width: 180,
+                //     align: 'center',
+                //     render: (text, record, index) => (
+                //         <div>
+                //             <Dropdown
+                //             placement="bottomCenter"
+                //             overlay={
+                //             <Menu>
+                //             <Menu.Item>
+                //             <Link to={this.onDetail(record.id)}>查看</Link>
+                //             </Menu.Item>
+                //             <Menu.Item>
+                //             <Link to={this.onEdit(record.id)}>编辑</Link>
+                //             </Menu.Item>
+                //             <Menu.Item>
+                //             <a onClick={() => this.onDelete(record.id)}>删除</a>
+                //             </Menu.Item>
+                //             </Menu>
+                //             }
+                //             >
+                //             <a className="ant-dropdown-link">操作</a>
+                //             </Dropdown>
+                //         </div>
+                //     )
             }];
     }
 
@@ -258,13 +259,15 @@ class Index extends React.Component {
         form.setFieldsValue(values);
     }
 
-    handleSubmit = (e) => {
-        e.preventDefault();
-        this.props.form.validateFieldsAndScroll((err, values) => {
-            if (!err) {
-                console.log('Received values of form: ', values);
-            }
-        });
+    add = type => {
+        const {match} = this.props;
+        const id = match.params.id;
+
+        if(type === 'client') {
+            router.push('/user/list/addClient/' + id);
+        }else {
+            router.push('/user/list/addOrder/' + id);
+        }
     }
 
     render() {
@@ -284,7 +287,7 @@ class Index extends React.Component {
                     <div className="breadcrumb-block">
                         <Breadcrumb>
                             <Breadcrumb.Item>业务员管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>业务员管理</Breadcrumb.Item>
+                            <Breadcrumb.Item>业务员列表</Breadcrumb.Item>
                             <Breadcrumb.Item>业务员详情</Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
@@ -378,6 +381,12 @@ class Index extends React.Component {
                                     </Form>
                                 </TabPane>
                                 <TabPane tab="客户列表" key="2">
+                                    <Button
+                                        type='primary'
+                                        style={{marginBottom: 15}}
+                                        onClick={() => this.add('client')}
+                                    >
+                                        <Icon type="plus"/> 新增客户</Button>
                                     <Table
                                         columns={this.columnsCustom}
                                         dataSource={dataSourceCustom}
@@ -388,6 +397,12 @@ class Index extends React.Component {
                                     />
                                 </TabPane>
                                 <TabPane tab="订单列表" key="3">
+                                    <Button
+                                        type='primary'
+                                        style={{marginBottom: 15}}
+                                        onClick={() => this.add('order')}
+                                    >
+                                        <Icon type="plus"/> 新增订单</Button>
                                     <Table
                                         columns={this.columnsOrder}
                                         dataSource={dataSourceOrder}

@@ -66,6 +66,34 @@ class Index extends React.Component {
                     <div className='ibox-content'>
                         <Form onSubmit={this.handleSubmit}>
                             <Spin spinning={loading}>
+                                <Divider>首页链接</Divider>
+                                <Row>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="产品销量榜链接"
+                                        >
+                                            {getFieldDecorator('productSellingUrl', {
+                                                initialValue: data.productSellingUrl
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="公司偿付榜链接"
+                                        >
+                                            {getFieldDecorator('companyPayUrl', {
+                                                initialValue: data.companyPayUrl
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                                <Divider>个人中心链接</Divider>
                                 <Row>
                                     <Col {...itemGrid}>
                                         <FormItem

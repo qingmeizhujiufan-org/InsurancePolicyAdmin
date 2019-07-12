@@ -15,10 +15,6 @@ const Menu = [{
         key: '001_1',
         link: '/client/list',
         label: '客户列表'
-    }, {
-        key: '001_2',
-        link: '/client/add',
-        label: '新增客户'
     }]
 }, {
     key: '002',

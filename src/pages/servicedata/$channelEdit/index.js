@@ -15,7 +15,7 @@ import '../index.less';
 
 const FormItem = Form.Item;
 
-@connect(state => state.insuranceCompanyEdit)
+@connect(state => state.channelEdit)
 @Form.create()
 class Index extends React.Component {
 
@@ -29,7 +29,7 @@ class Index extends React.Component {
         console.log('match === ', match);
 
         dispatch({
-            type: 'insuranceCompanyEdit/queryDetail',
+            type: 'channelEdit/queryDetail',
             payload: {
                 id
             },
@@ -59,7 +59,7 @@ class Index extends React.Component {
                 console.log('handleSubmit  param === ', values);
 
                 dispatch({
-                    type: 'insuranceCompanyEdit/update',
+                    type: 'channelEdit/update',
                     payload: values
                 });
             }
@@ -89,23 +89,13 @@ class Index extends React.Component {
                                     <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
-                                            label="公司名称"
+                                            label="渠道名称"
                                         >
-                                            {getFieldDecorator('companyName', {
+                                            {getFieldDecorator('channelName', {
                                                 rules: [{
-                                                    required: true, message: '请输入公司名称',
+                                                    required: true, message: '请输入渠道名称',
                                                 }],
                                             })(
-                                                <Input/>
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                    <Col {...itemGrid}>
-                                        <FormItem
-                                            {...formItemLayout}
-                                            label="热线电话"
-                                        >
-                                            {getFieldDecorator('hotLine')(
                                                 <Input/>
                                             )}
                                         </FormItem>
