@@ -4,13 +4,10 @@ import Link from 'umi/link';
 import {
     notification,
     Icon,
-    Divider,
     Breadcrumb,
-    Button,
     message,
     Dropdown,
     Menu,
-    Switch,
     Row,
     Col,
     Input,
@@ -80,12 +77,6 @@ class Index extends React.Component {
                                     <Menu.Item>
                                         <Link to={this.onDetail(record.id)}>查看</Link>
                                     </Menu.Item>
-                                    {/*<Menu.Item>*/}
-                                        {/*<Link to={this.onEdit(record.id)}>编辑</Link>*/}
-                                    {/*</Menu.Item>*/}
-                                    {/*<Menu.Item>*/}
-                                        {/*<a onClick={() => this.onDelete(record.id)}>删除</a>*/}
-                                    {/*</Menu.Item>*/}
                                 </Menu>
                             }
                         >
@@ -134,42 +125,6 @@ class Index extends React.Component {
 
     onDetail = id => {
         return `/user/list/detail/${id}`
-    }
-
-    onEdit = id => {
-        return `/user/edit/${id}`
-    }
-
-    onDelete = id => {
-        Modal.confirm({
-            title: '提示',
-            content: '确认要删除吗？',
-            okText: '确认',
-            cancelText: '取消',
-            onOk: () => {
-                let param = {};
-                param.id = id;
-                axios.post('admin/delete', param).then(res => res.data).then(data => {
-                    if (data.success) {
-                        notification.success({
-                            message: '提示',
-                            description: '删除成功！'
-                        });
-
-                        this.setState({
-                            params: {
-                                pageNumber: 1,
-                                pageSize: 10
-                            }
-                        }, () => {
-                            this.queryList();
-                        });
-                    } else {
-                        message.error(data.backMsg);
-                    }
-                });
-            }
-        });
     }
 
     render() {

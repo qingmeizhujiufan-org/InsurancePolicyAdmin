@@ -1,14 +1,16 @@
-import {routerRedux} from 'dva/router';
-import {queryOneUser, queryCustomList, queryOrderList} from './service';
-import {message} from "antd";
+import store from 'store';
+import {queryOneUser, queryCustomList, queryOrderList, delClient, delOrder} from './service';
+import {message, notification} from "antd";
 import {pathMatchRegexp} from 'utils/util';
-import {queryList} from "../userList/service";
 
 export default {
     namespace: 'userDetail',
 
     state: {
         loading: false,
+        loadingCustom: false,
+        loadingOrder: false,
+        activeTabKey: store.get('userDetail/activeTabKey') || '1',
         userInfo: {},
         dataSourceCustom: [],
         dataSourceOrder: [],
@@ -54,6 +56,7 @@ export default {
         /* 查询客户列表 */
         * queryCustomList({payload}, {put, call, select}) {
             console.log('queryList payload == ', payload);
+            const {pageNumber, pageSize} = payload;
             const data = yield call(queryCustomList, payload);
             if (data.success) {
                 const backData = data.backData || [];
@@ -63,7 +66,11 @@ export default {
                     type: 'setState',
                     payload: {
                         dataSourceCustom: content,
-                        paginationCustom: {total}
+                        paginationCustom: {total},
+                        paramsCustom: {
+                            pageNumber,
+                            pageSize
+                        }
                     }
                 });
             } else {
@@ -74,6 +81,7 @@ export default {
         /* 查询订单列表 */
         * queryOrderList({payload}, {put, call, select}) {
             console.log('queryList payload == ', payload);
+            const {pageNumber, pageSize} = payload;
             const data = yield call(queryOrderList, payload);
             if (data.success) {
                 const backData = data.backData || [];
@@ -83,7 +91,11 @@ export default {
                     type: 'setState',
                     payload: {
                         dataSourceOrder: content,
-                        paginationOrder: {total}
+                        paginationOrder: {total},
+                        paramsOrder: {
+                            pageNumber,
+                            pageSize
+                        }
                     }
                 });
             } else {
@@ -91,28 +103,49 @@ export default {
             }
         },
 
-        /* 搜索 */
-        * onSearch({payload}, {put, call, select}) {
-            const {keyWords} = payload;
+        /* 删除 */
+        * delete({payload}, {put, call, select}) {
+            const {id, type, userId} = payload;
 
-            yield put({
-                type: 'setState',
-                payload: {
-                    params: {
-                        pageNumber: 1,
-                        pageSize: 10,
-                    },
-                    keyWords
+            if (type === 'client') {
+                const data = yield call(delClient, {id});
+                if (data.success) {
+                    yield put({
+                        type: 'queryCustomList',
+                        payload: {
+                            pageNumber: 1,
+                            pageSize: 10,
+                            userId
+                        }
+                    });
+
+                    notification.success({
+                        message: '提示',
+                        description: '删除客户成功！'
+                    });
+                } else {
+                    message.error(data.backMsg);
                 }
-            });
-            yield put({
-                type: 'queryList',
-                payload: {
-                    pageNumber: 1,
-                    pageSize: 10,
-                    keyWords
+            } else if (type === 'order') {
+                const data = yield call(delOrder, {id});
+                if (data.success) {
+                    yield put({
+                        type: 'queryOrderList',
+                        payload: {
+                            pageNumber: 1,
+                            pageSize: 10,
+                            userId
+                        }
+                    });
+
+                    notification.success({
+                        message: '提示',
+                        description: '删除订单成功！'
+                    });
+                } else {
+                    message.error(data.backMsg);
                 }
-            });
+            }
         },
     },
 
@@ -122,19 +155,6 @@ export default {
                 ...state,
                 ...payload,
             };
-        },
-    },
-
-    subscriptions: {
-        setup({dispatch, history}) {
-            // history.listen(({pathname}) => {
-            //             //     if (
-            //             //         pathMatchRegexp('/user', pathname) ||
-            //             //         pathMatchRegexp('/user/list', pathname)
-            //             //     ) {
-            //             //         dispatch({type: 'queryList'});
-            //             //     }
-            //             // })
         },
     },
 }

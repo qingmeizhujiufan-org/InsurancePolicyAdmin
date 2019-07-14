@@ -25,10 +25,10 @@ const FormItem = Form.Item;
 class Index extends React.Component {
 
     componentDidMount = () => {
-        const {form, match} = this.props;
-        const {id} = match.params;
+        const {form, location} = this.props;
+        const {userId} = location.query;
 
-        form.setFieldsValue({userId: id});
+        form.setFieldsValue({userId});
         // dispatch({
         //     type: 'clientAdd/queryUserList',
         //     payload: {
@@ -156,11 +156,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="备注"
                                     >
-                                        {getFieldDecorator('customName', {
-                                            rules: [{
-                                                required: true, message: '请输入真实姓名'
-                                            }]
-                                        })(
+                                        {getFieldDecorator('mark')(
                                             <TextArea autosize={{minRows: 2, maxRows: 6}}/>
                                         )}
                                     </FormItem>

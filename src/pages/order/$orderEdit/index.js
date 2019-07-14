@@ -1,6 +1,5 @@
 import React from 'react';
 import {connect} from "dva";
-import router from 'umi/router';
 import {
     Row,
     Col,
@@ -10,8 +9,9 @@ import {
     Button,
     Select,
     Divider,
-    AutoComplete
+    Spin
 } from 'antd';
+import moment from 'moment';
 import {DatePicker, InputNumber} from 'zui';
 import {formItemLayout, itemGrid} from 'utils/formItemGrid';
 import '../index.less';
@@ -19,19 +19,20 @@ import '../index.less';
 const {TextArea} = Input;
 const FormItem = Form.Item;
 
-@connect(state => state.orderAdd)
+@connect(state => state.orderEdit)
 @Form.create()
 class Index extends React.Component {
 
     componentDidMount = () => {
-        const {dispatch, form, location} = this.props;
+        const {dispatch, location} = this.props;
         const {userId} = location.query;
 
-        form.setFieldsValue({userId});
+        /* 查询订单详情 */
+        this.queryDetail();
 
         /* 查询保险公司列表 */
         dispatch({
-            type: 'orderAdd/queryInsuranceCompanyList',
+            type: 'orderEdit/queryInsuranceCompanyList',
             payload: {
                 userId,
                 pageNumber: 1,
@@ -41,7 +42,7 @@ class Index extends React.Component {
 
         /* 查询渠道列表 */
         dispatch({
-            type: 'orderAdd/queryChannelList',
+            type: 'orderEdit/queryChannelList',
             payload: {
                 userId,
                 pageNumber: 1,
@@ -51,7 +52,7 @@ class Index extends React.Component {
 
         /* 查询客户列表 */
         dispatch({
-            type: 'orderAdd/queryClientList',
+            type: 'orderEdit/queryClientList',
             payload: {
                 userId,
                 pageNumber: 1,
@@ -60,26 +61,53 @@ class Index extends React.Component {
         });
     }
 
-    onSelect = (val) => {
-        console.log('onSelect == ', val);
+    queryDetail = () => {
+        const {dispatch, match, location} = this.props;
+        const {id} = match.params;
+        const {userId} = location.query;
+
+        dispatch({
+            type: 'orderEdit/queryDetail',
+            payload: {
+                id,
+                userId
+            },
+            callback: res => {
+                this.setFields(res);
+            }
+        });
     }
 
-    onChange = (val) => {
-        console.log('onSelect == ', val);
+    setFields = val => {
+        const {form, location} = this.props;
+        const {userId} = location.query;
+        const values = form.getFieldsValue();
+
+        for (let key in values) {
+            if(key === 'insuredTime' || key === 'policyholderBirthday' || key === 'insuredBirthday') {
+                values[key] = val[key] && new moment(val[key]);
+            }else {
+                values[key] = val[key];
+            }
+        }
+        values.userId = userId;
+
+        form.setFieldsValue(values);
     }
 
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                const {dispatch} = this.props;
+                const {dispatch, match} = this.props;
+                const {id} = match.params;
+                values.id = id;
                 values.insuredTime = values.insuredTime.format('YYYY/MM/DD');
                 values.policyholderBirthday = values.policyholderBirthday.format('YYYY/MM/DD');
                 values.insuredBirthday = values.insuredBirthday.format('YYYY/MM/DD');
-                console.log('handleSubmit  param === ', values);
 
                 dispatch({
-                    type: 'orderAdd/add',
+                    type: 'orderEdit/update',
                     payload: values
                 });
             }
@@ -92,6 +120,7 @@ class Index extends React.Component {
             dataSource_company,
             dataSource_channel,
             dataSource_client,
+            loading,
             submitLoading
         } = this.props;
         const {getFieldDecorator} = form;
@@ -103,13 +132,14 @@ class Index extends React.Component {
                         <Breadcrumb>
                             <Breadcrumb.Item>业务员管理</Breadcrumb.Item>
                             <Breadcrumb.Item>业务员列表</Breadcrumb.Item>
-                            <Breadcrumb.Item>新增订单</Breadcrumb.Item>
+                            <Breadcrumb.Item>更新订单信息</Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
-                    <h1 className='title'>新增订单</h1>
+                    <h1 className='title'>更新订单信息</h1>
                 </div>
                 <div className='pageContent'>
                     <div className='ibox-content'>
+                        <Spin spinning={loading}>
                         <Form onSubmit={this.handleSubmit}>
                             <Divider>关联信息</Divider>
                             <Row>
@@ -445,6 +475,7 @@ class Index extends React.Component {
                                         loading={submitLoading}>提交</Button>
                             </Row>
                         </Form>
+                        </Spin>
                     </div>
                 </div>
             </div>

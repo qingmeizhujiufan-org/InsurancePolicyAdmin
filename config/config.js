@@ -37,12 +37,20 @@ export default {
                         component: './user/$userEdit',
                     }, {
                         name: 'clientAdd',
-                        path: '/user/list/addClient/:id',
+                        path: '/user/list/addClient',
                         component: './client/clientAdd',
                     }, {
+                        name: 'clientEdit',
+                        path: '/user/list/editClient/:id',
+                        component: './client/$clientEdit',
+                    }, {
                         name: 'orderAdd',
-                        path: '/user/list/addOrder/:id',
+                        path: '/user/list/addOrder',
                         component: './order/orderAdd',
+                    }, {
+                        name: '$orderEdit',
+                        path: '/user/list/editOrder/:id',
+                        component: './order/$orderEdit',
                     }]
                 }, {
                     path: '/client',

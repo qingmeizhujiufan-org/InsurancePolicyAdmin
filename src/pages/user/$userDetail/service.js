@@ -20,3 +20,18 @@ export async function queryOrderList(params) {
         params,
     });
 }
+
+export async function delClient(params) {
+    return request('/custom/delete', {
+        method: 'POST',
+        data: params,
+    });
+}
+
+export async function delOrder(params) {
+    return request('/order/delete', {
+        method: 'POST',
+        data: params,
+    });
+}
+

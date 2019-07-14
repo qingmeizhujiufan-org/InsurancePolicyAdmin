@@ -1,6 +1,8 @@
 import React from 'react';
 import {connect} from "dva";
+import Link from 'umi/link';
 import router from "umi/router";
+import store from 'store';
 import {
     Form,
     Input,
@@ -10,10 +12,13 @@ import {
     Col,
     Tabs,
     Spin,
-    Icon, Button,
+    Icon,
+    Button,
+    Menu,
+    Dropdown, Modal,
 } from 'antd';
 import {Table, Card} from 'zui';
-import {formItemLayout} from 'utils/formItemGrid';
+import {formItemLayout, itemGrid} from 'utils/formItemGrid';
 import '../index.less';
 
 const {TabPane} = Tabs;
@@ -32,6 +37,9 @@ class Index extends React.Component {
                 align: 'center',
                 dataIndex: 'customName',
                 key: 'customName',
+                render: (text, record, index) => (
+                    <a onClick={() => this.onEdit(record.id, 'client')}>{text}</a>
+                )
             }, {
                 title: '性别',
                 width: 80,
@@ -67,36 +75,33 @@ class Index extends React.Component {
                 key: 'updated_at'
             }, {
                 title: '备注',
-                dataIndex: 'memo',
-                key: 'memo',
-                // }, {
-                //     title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
-                //     key: 'operation',
-                //     fixed: 'right',
-                //     width: 180,
-                //     align: 'center',
-                //     render: (text, record, index) => (
-                //         <div>
-                //             <Dropdown
-                //             placement="bottomCenter"
-                //             overlay={
-                //             <Menu>
-                //             <Menu.Item>
-                //             <Link to={this.onDetail(record.id)}>查看</Link>
-                //             </Menu.Item>
-                //             <Menu.Item>
-                //             <Link to={this.onEdit(record.id)}>编辑</Link>
-                //             </Menu.Item>
-                //             <Menu.Item>
-                //             <a onClick={() => this.onDelete(record.id)}>删除</a>
-                //             </Menu.Item>
-                //             </Menu>
-                //             }
-                //             >
-                //             <a className="ant-dropdown-link">操作</a>
-                //             </Dropdown>
-                //         </div>
-                //     )
+                dataIndex: 'mark',
+                key: 'mark',
+            }, {
+                title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
+                key: 'operation',
+                fixed: 'right',
+                width: 180,
+                align: 'center',
+                render: (text, record, index) => (
+                    <div>
+                        <Dropdown
+                            placement="bottomCenter"
+                            overlay={
+                                <Menu>
+                                    <Menu.Item>
+                                        <a onClick={() => this.onEdit(record.id, 'client')}>编辑</a>
+                                    </Menu.Item>
+                                    <Menu.Item>
+                                        <a onClick={() => this.onDelete(record, 'client')}>删除</a>
+                                    </Menu.Item>
+                                </Menu>
+                            }
+                        >
+                            <a className="ant-dropdown-link">操作</a>
+                        </Dropdown>
+                    </div>
+                )
             }];
 
         this.columnsOrder = [
@@ -107,6 +112,9 @@ class Index extends React.Component {
                 align: 'center',
                 dataIndex: 'insurancePolicyNo',
                 key: 'insurancePolicyNo',
+                render: (text, record, index) => (
+                    <a onClick={() => this.onEdit(record.id, 'order')}>{text}</a>
+                )
             }, {
                 title: '险种',
                 width: 200,
@@ -165,34 +173,31 @@ class Index extends React.Component {
                 title: '备注',
                 dataIndex: 'memo',
                 key: 'memo',
-                // }, {
-                //     title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
-                //     key: 'operation',
-                //     fixed: 'right',
-                //     width: 180,
-                //     align: 'center',
-                //     render: (text, record, index) => (
-                //         <div>
-                //             <Dropdown
-                //             placement="bottomCenter"
-                //             overlay={
-                //             <Menu>
-                //             <Menu.Item>
-                //             <Link to={this.onDetail(record.id)}>查看</Link>
-                //             </Menu.Item>
-                //             <Menu.Item>
-                //             <Link to={this.onEdit(record.id)}>编辑</Link>
-                //             </Menu.Item>
-                //             <Menu.Item>
-                //             <a onClick={() => this.onDelete(record.id)}>删除</a>
-                //             </Menu.Item>
-                //             </Menu>
-                //             }
-                //             >
-                //             <a className="ant-dropdown-link">操作</a>
-                //             </Dropdown>
-                //         </div>
-                //     )
+            }, {
+                title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
+                key: 'operation',
+                fixed: 'right',
+                width: 180,
+                align: 'center',
+                render: (text, record, index) => (
+                    <div>
+                        <Dropdown
+                            placement="bottomCenter"
+                            overlay={
+                                <Menu>
+                                    <Menu.Item>
+                                        <a onClick={() => this.onEdit(record.id, 'order')}>编辑</a>
+                                    </Menu.Item>
+                                    <Menu.Item>
+                                        <a onClick={() => this.onDelete(record, 'order')}>删除</a>
+                                    </Menu.Item>
+                                </Menu>
+                            }
+                        >
+                            <a className="ant-dropdown-link">操作</a>
+                        </Dropdown>
+                    </div>
+                )
             }];
     }
 
@@ -259,14 +264,81 @@ class Index extends React.Component {
         form.setFieldsValue(values);
     }
 
+    onTabsChange = activeKey => {
+        const {dispatch} = this.props;
+        store.set('userDetail/activeTabKey', activeKey);
+
+        dispatch({
+            type: 'userDetail/setState',
+            payload: {
+                activeTabKey: activeKey
+            }
+        });
+    }
+
+    onEdit = (id, type) => {
+        const {match} = this.props;
+        const userId = match.params.id;
+
+        if (type === 'client') {
+            router.push({
+                pathname: '/user/list/editClient/' + id,
+                query: {
+                    userId
+                }
+            });
+        } else {
+            router.push({
+                pathname: '/user/list/editOrder/' + id,
+                query: {
+                    userId
+                }
+            });
+        }
+    }
+
+    onDelete = (record, type) => {
+        const {dispatch, match} = this.props;
+        const userId = match.params.id;
+        let content = '';
+        if (type === 'client') {
+            content = `确认要删除【客户】${record.customName} 吗`;
+        } else {
+            content = `确认要删除【订单】${record.insurancePolicyNo} 吗`;
+        }
+
+        Modal.confirm({
+            title: '提示',
+            content: content,
+            okText: '确认',
+            cancelText: '取消',
+            onOk: () => {
+                dispatch({
+                    type: 'userDetail/delete',
+                    payload: {
+                        id: record.id,
+                        type,
+                        userId
+                    }
+                });
+            }
+        });
+    }
+
     add = type => {
         const {match} = this.props;
         const id = match.params.id;
 
-        if(type === 'client') {
-            router.push('/user/list/addClient/' + id);
-        }else {
-            router.push('/user/list/addOrder/' + id);
+        if (type === 'client') {
+            router.push({
+                pathname: '/user/list/addClient',
+                query: {userId: id}
+            });
+        } else {
+            router.push({
+                pathname: '/user/list/addOrder',
+                query: {userId: id}
+            });
         }
     }
 
@@ -274,6 +346,9 @@ class Index extends React.Component {
         const {
             form,
             loading,
+            loadingCustom,
+            loadingOrder,
+            activeTabKey,
             dataSourceCustom,
             dataSourceOrder,
             paginationCustom,
@@ -296,27 +371,21 @@ class Index extends React.Component {
                 <div className='pageContent'>
                     <Card>
                         <Spin spinning={loading}>
-                            <Tabs defaultActiveKey="1">
+                            <Tabs defaultActiveKey={activeTabKey} onChange={this.onTabsChange}>
                                 <TabPane tab="基本信息" key="1">
                                     <Form>
-                                        <Row type='flex' justify='center'>
-                                            <Col span={12}>
+                                        <Row>
+                                            <Col {...itemGrid}>
                                                 <FormItem
                                                     {...formItemLayout}
-                                                    label="昵称"
-                                                >
-                                                    {getFieldDecorator('nickname')(
-                                                        <Input disabled={true}/>
-                                                    )}
-                                                </FormItem>
-                                                <FormItem
-                                                    {...formItemLayout}
-                                                    label="真实姓名"
+                                                    label="姓名"
                                                 >
                                                     {getFieldDecorator('realname')(
                                                         <Input disabled={true}/>
                                                     )}
                                                 </FormItem>
+                                            </Col>
+                                            <Col {...itemGrid}>
                                                 <FormItem
                                                     {...formItemLayout}
                                                     label="性别"
@@ -325,6 +394,8 @@ class Index extends React.Component {
                                                         <Input disabled={true}/>
                                                     )}
                                                 </FormItem>
+                                            </Col>
+                                            <Col {...itemGrid}>
                                                 <FormItem
                                                     {...formItemLayout}
                                                     label="手机号"
@@ -333,6 +404,8 @@ class Index extends React.Component {
                                                         <Input disabled={true}/>
                                                     )}
                                                 </FormItem>
+                                            </Col>
+                                            <Col {...itemGrid}>
                                                 <FormItem
                                                     {...formItemLayout}
                                                     label="生日"
@@ -341,6 +414,8 @@ class Index extends React.Component {
                                                         <Input disabled={true}/>
                                                     )}
                                                 </FormItem>
+                                            </Col>
+                                            <Col {...itemGrid}>
                                                 <FormItem
                                                     {...formItemLayout}
                                                     label="创建时间"
@@ -349,31 +424,14 @@ class Index extends React.Component {
                                                         <Input disabled={true}/>
                                                     )}
                                                 </FormItem>
+                                            </Col>
+                                            <Col {...itemGrid}>
                                                 <FormItem
                                                     {...formItemLayout}
                                                     label="更新时间"
                                                 >
                                                     {getFieldDecorator('updated_at')(
                                                         <Input disabled={true}/>
-                                                    )}
-                                                </FormItem>
-                                            </Col>
-                                            <Col span={4}>
-                                                <FormItem
-                                                    {...formItemLayout}
-                                                    label="头像"
-                                                >
-                                                    {getFieldDecorator('avatarSrc', {
-                                                        valuePropName: 'fileList',
-                                                        getValueFromEvent: this.normFile,
-                                                        rules: [{required: false, message: '头像不能为空!'}]
-                                                    })(
-                                                        <Upload
-                                                            disabled={true}
-                                                            listType="picture-card"
-                                                            onRemove={() => false}
-                                                        >
-                                                        </Upload>
                                                     )}
                                                 </FormItem>
                                             </Col>
@@ -391,7 +449,7 @@ class Index extends React.Component {
                                         columns={this.columnsCustom}
                                         dataSource={dataSourceCustom}
                                         pagination={paginationCustom}
-                                        loading={loading}
+                                        loading={loadingCustom}
                                         scroll={{x: 1500}}
                                         handlePageChange={this.handlePageChange}
                                     />
@@ -407,7 +465,7 @@ class Index extends React.Component {
                                         columns={this.columnsOrder}
                                         dataSource={dataSourceOrder}
                                         pagination={paginationOrder}
-                                        loading={loading}
+                                        loading={loadingOrder}
                                         scroll={{x: 2200}}
                                         handlePageChange={this.handlePageChange}
                                     />

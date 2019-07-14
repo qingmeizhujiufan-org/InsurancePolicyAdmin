@@ -1,21 +1,21 @@
 const Menu = [{
     key: '000',
-    iconType: 'bank',
+    iconType: 'usergroup-add',
     label: '业务员管理',
     children: [{
         key: '000_1',
         link: '/user/list',
         label: '业务员列表'
     }]
-}, {
-    key: '001',
-    iconType: 'usergroup-add',
-    label: '客户管理',
-    children: [{
-        key: '001_1',
-        link: '/client/list',
-        label: '客户列表'
-    }]
+// }, {
+//     key: '001',
+//     iconType: 'usergroup-add',
+//     label: '客户管理',
+//     children: [{
+//         key: '001_1',
+//         link: '/client/list',
+//         label: '客户列表'
+//     }]
 }, {
     key: '002',
     iconType: 'appstore',
