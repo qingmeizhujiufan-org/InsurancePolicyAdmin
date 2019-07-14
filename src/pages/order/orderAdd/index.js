@@ -8,34 +8,56 @@ import {
     Input,
     Breadcrumb,
     Button,
-    AutoComplete,
     Select,
-    Divider
+    Divider,
+    AutoComplete
 } from 'antd';
-import {DatePicker} from 'zui';
+import {DatePicker, InputNumber} from 'zui';
 import {formItemLayout, itemGrid} from 'utils/formItemGrid';
 import '../index.less';
 
-const {Option} = AutoComplete;
 const {TextArea} = Input;
 const FormItem = Form.Item;
 
-@connect(state => state.clientAdd)
+@connect(state => state.orderAdd)
 @Form.create()
 class Index extends React.Component {
 
     componentDidMount = () => {
-        const {form, match} = this.props;
+        const {dispatch, form, match} = this.props;
         const {id} = match.params;
 
         form.setFieldsValue({userId: id});
-        // dispatch({
-        //     type: 'clientAdd/queryUserList',
-        //     payload: {
-        //         pageNumber: 1,
-        //         pageSize: 9999
-        //     }
-        // });
+
+        /* 查询保险公司列表 */
+        dispatch({
+            type: 'orderAdd/queryInsuranceCompanyList',
+            payload: {
+                userId: id,
+                pageNumber: 1,
+                pageSize: 9999
+            }
+        });
+
+        /* 查询渠道列表 */
+        dispatch({
+            type: 'orderAdd/queryChannelList',
+            payload: {
+                userId: id,
+                pageNumber: 1,
+                pageSize: 9999
+            }
+        });
+
+        /* 查询客户列表 */
+        dispatch({
+            type: 'orderAdd/queryClientList',
+            payload: {
+                userId: id,
+                pageNumber: 1,
+                pageSize: 9999
+            }
+        });
     }
 
     onSelect = (val) => {
@@ -51,10 +73,13 @@ class Index extends React.Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 const {dispatch} = this.props;
+                values.insuredTime = values.insuredTime.format('YYYY/MM/DD');
+                values.policyholderBirthday = values.policyholderBirthday.format('YYYY/MM/DD');
+                values.insuredBirthday = values.insuredBirthday.format('YYYY/MM/DD');
                 console.log('handleSubmit  param === ', values);
 
                 dispatch({
-                    type: 'clientAdd/add',
+                    type: 'orderAdd/add',
                     payload: values
                 });
             }
@@ -62,7 +87,13 @@ class Index extends React.Component {
     }
 
     render() {
-        const {form, dataSource, submitLoading} = this.props;
+        const {
+            form,
+            dataSource_company,
+            dataSource_channel,
+            dataSource_client,
+            submitLoading
+        } = this.props;
         const {getFieldDecorator} = form;
 
         return (
@@ -70,11 +101,12 @@ class Index extends React.Component {
                 <div className='pageHeader'>
                     <div className="breadcrumb-block">
                         <Breadcrumb>
-                            <Breadcrumb.Item>客户管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>新增客户</Breadcrumb.Item>
+                            <Breadcrumb.Item>业务员管理</Breadcrumb.Item>
+                            <Breadcrumb.Item>业务员列表</Breadcrumb.Item>
+                            <Breadcrumb.Item>新增订单</Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
-                    <h1 className='title'>新增客户</h1>
+                    <h1 className='title'>新增订单</h1>
                 </div>
                 <div className='pageContent'>
                     <div className='ibox-content'>
@@ -92,16 +124,16 @@ class Index extends React.Component {
                                     </FormItem>
                                 </Col>
                             </Row>
-                            <Divider>基本信息</Divider>
+                            <Divider>保单信息</Divider>
                             <Row>
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="真实姓名"
+                                        label="保险单号"
                                     >
-                                        {getFieldDecorator('customName', {
+                                        {getFieldDecorator('insurancePolicyNo', {
                                             rules: [{
-                                                required: true, message: '请输入真实姓名'
+                                                required: true, message: '请输入保险单号'
                                             }]
                                         })(
                                             <Input/>
@@ -111,27 +143,12 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="性别"
+                                        label="产品名称"
                                     >
-                                        {getFieldDecorator('customSex', {
-                                            initialValue: 1
-                                        })(
-                                            <Select>
-                                                <Select.Option value={1}>男</Select.Option>
-                                                <Select.Option value={0}>女</Select.Option>
-                                            </Select>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="电话后四位"
-                                    >
-                                        {getFieldDecorator('customTel', {
+                                        {getFieldDecorator('insuranceName', {
                                             rules: [{
-                                                required: true, message: '请输入个人电话'
-                                            }],
+                                                required: true, message: '请输入产品名称'
+                                            }]
                                         })(
                                             <Input/>
                                         )}
@@ -140,11 +157,37 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="生日"
+                                        label="保险公司"
                                     >
-                                        {getFieldDecorator('customBirth', {
+                                        {getFieldDecorator('insuranceCompany', {
                                             rules: [{
-                                                required: true, message: '请选择生日'
+                                                required: true, message: '请输入保险公司'
+                                            }],
+                                        })(
+                                            <AutoComplete
+                                                allowClear
+                                                placeholder="请输入保险公司名称"
+                                            >
+                                                {
+                                                    dataSource_company.map(item => {
+                                                        return (
+                                                            <AutoComplete.Option
+                                                                key={item.id}>{item.companyName}</AutoComplete.Option>
+                                                        )
+                                                    })
+                                                }
+                                            </AutoComplete>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="生效时间"
+                                    >
+                                        {getFieldDecorator('insuredTime', {
+                                            rules: [{
+                                                required: true, message: '请选择生效时间'
                                             }],
                                         })(
                                             <DatePicker/>
@@ -154,14 +197,256 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
+                                        label="缴费年限"
+                                    >
+                                        {getFieldDecorator('paymentDuration', {
+                                            rules: [{
+                                                required: true, message: '请选择缴费年限'
+                                            }],
+                                            initialValue: 1
+                                        })(
+                                            <InputNumber
+                                                min={0}
+                                                formatter={value => `${value}年`}
+                                                parser={value => value.replace('年', '')}
+                                            />
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="保额"
+                                    >
+                                        {getFieldDecorator('insuredSum', {
+                                            rules: [{
+                                                required: true, message: '请输入保额'
+                                            }],
+                                        })(
+                                            <Input/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="保费"
+                                    >
+                                        {getFieldDecorator('insurance', {
+                                            rules: [{
+                                                required: true, message: '请输入保费'
+                                            }],
+                                        })(
+                                            <Input/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
                                         label="备注"
                                     >
-                                        {getFieldDecorator('customName', {
-                                            rules: [{
-                                                required: true, message: '请输入真实姓名'
-                                            }]
-                                        })(
+                                        {getFieldDecorator('mark')(
                                             <TextArea autosize={{minRows: 2, maxRows: 6}}/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                            </Row>
+                            <Divider>订单渠道</Divider>
+                            <Row>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="渠道"
+                                    >
+                                        {getFieldDecorator('orderChannel', {
+                                            rules: [{
+                                                required: true, message: '请输入渠道名称'
+                                            }],
+                                        })(
+                                            <AutoComplete
+                                                allowClear
+                                                onSelect={this.onSelect}
+                                                onSearch={this.onSearch}
+                                                placeholder="请输入渠道名称"
+                                            >
+                                                {
+                                                    dataSource_channel.map(item => {
+                                                        return (
+                                                            <AutoComplete.Option
+                                                                key={item.id}>{item.channelName}</AutoComplete.Option>
+                                                        )
+                                                    })
+                                                }
+                                            </AutoComplete>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                            </Row>
+                            <Divider>关联客户</Divider>
+                            <Row>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="客户"
+                                    >
+                                        {getFieldDecorator('clientId', {
+                                            rules: [{
+                                                required: true, message: '请输入客户名称'
+                                            }],
+                                        })(
+                                            <AutoComplete
+                                                allowClear
+                                                onSelect={this.onSelect}
+                                                onSearch={this.onSearch}
+                                                placeholder="请输入客户名称"
+                                            >
+                                                {
+                                                    dataSource_client.map(item => {
+                                                        return (
+                                                            <AutoComplete.Option
+                                                                key={item.id}>{`${item.customName}/${item.customTel}`}</AutoComplete.Option>
+                                                        )
+                                                    })
+                                                }
+                                            </AutoComplete>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                            </Row>
+                            <Divider>投保人信息</Divider>
+                            <Row>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="投保人姓名"
+                                    >
+                                        {getFieldDecorator('policyholderName', {
+                                            rules: [{
+                                                required: true, message: '请输入投保人姓名'
+                                            }],
+                                        })(
+                                            <Input/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="投保人生日"
+                                    >
+                                        {getFieldDecorator('policyholderBirthday', {
+                                            rules: [{
+                                                required: true, message: '请选择投保人生日'
+                                            }],
+                                        })(
+                                            <DatePicker/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="投保人电话后四位"
+                                    >
+                                        {getFieldDecorator('policyholderTelephone', {
+                                            rules: [{
+                                                required: true, message: '请输入投保人电话后四位'
+                                            }],
+                                        })(
+                                            <Input/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="投保人性别"
+                                    >
+                                        {getFieldDecorator('policyholderSex', {
+                                            initialValue: 1
+                                        })(
+                                            <Select>
+                                                <Select.Option value={1}>男</Select.Option>
+                                                <Select.Option value={0}>女</Select.Option>
+                                            </Select>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                            </Row>
+                            <Divider>被保人信息</Divider>
+                            <Row>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="被保人姓名"
+                                    >
+                                        {getFieldDecorator('insuredName', {
+                                            rules: [{
+                                                required: true, message: '请输入被保人姓名'
+                                            }],
+                                        })(
+                                            <Input/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="被保人生日"
+                                    >
+                                        {getFieldDecorator('insuredBirthday', {
+                                            rules: [{
+                                                required: true, message: '请选择被保人生日'
+                                            }],
+                                        })(
+                                            <DatePicker/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="被保人电话后四位"
+                                    >
+                                        {getFieldDecorator('insuredTelephone', {
+                                            rules: [{
+                                                required: true, message: '请输入被保人电话后四位'
+                                            }],
+                                        })(
+                                            <Input/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="被保人性别"
+                                    >
+                                        {getFieldDecorator('insuredSex', {
+                                            initialValue: 1
+                                        })(
+                                            <Select>
+                                                <Select.Option value={1}>男</Select.Option>
+                                                <Select.Option value={0}>女</Select.Option>
+                                            </Select>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                            </Row>
+                            <Divider>受益人信息</Divider>
+                            <Row>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="受益人姓名"
+                                    >
+                                        {getFieldDecorator('beneficiaryName', {
+                                            rules: [{
+                                                required: true, message: '请输入受益人姓名'
+                                            }],
+                                        })(
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>

@@ -125,14 +125,6 @@ class Index extends React.Component {
                                     onSearch={this.onSearch}
                                 />
                             </Col>
-                            <Col span={3}>
-                                <Button
-                                    icon='plus'
-                                    size="large"
-                                    onClick={() => router.push('/client/add')}
-                                    style={{marginLeft: 25}}
-                                >新增客户</Button>
-                            </Col>
                         </Row>
                     </div>
                 </div>
