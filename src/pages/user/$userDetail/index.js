@@ -20,6 +20,7 @@ import {
 import {Table, Card} from 'zui';
 import {formItemLayout, itemGrid} from 'utils/formItemGrid';
 import '../index.less';
+import _assign from "lodash/assign";
 
 const {TabPane} = Tabs;
 const FormItem = Form.Item;
@@ -342,6 +343,30 @@ class Index extends React.Component {
         }
     }
 
+    // 处理客户分页变化
+    handlePageChangeCustom = param => {
+        const {dispatch, match, paramsCustom} = this.props;
+        const id = match.params.id;
+        const payload = _assign({userId: id}, paramsCustom, param);
+
+        dispatch({
+            type: 'userDetail/queryCustomList',
+            payload
+        });
+    }
+
+    // 处理订单分页变化
+    handlePageChangeOrder = param => {
+        const {dispatch, match, paramsOrder} = this.props;
+        const id = match.params.id;
+        const payload = _assign({userId: id}, paramsOrder, param);
+
+        dispatch({
+            type: 'userDetail/queryOrderList',
+            payload
+        });
+    }
+
     render() {
         const {
             form,
@@ -451,7 +476,7 @@ class Index extends React.Component {
                                         pagination={paginationCustom}
                                         loading={loadingCustom}
                                         scroll={{x: 1500}}
-                                        handlePageChange={this.handlePageChange}
+                                        handlePageChange={this.handlePageChangeCustom}
                                     />
                                 </TabPane>
                                 <TabPane tab="订单列表" key="3">
@@ -467,7 +492,7 @@ class Index extends React.Component {
                                         pagination={paginationOrder}
                                         loading={loadingOrder}
                                         scroll={{x: 2200}}
-                                        handlePageChange={this.handlePageChange}
+                                        handlePageChange={this.handlePageChangeOrder}
                                     />
                                 </TabPane>
                             </Tabs>

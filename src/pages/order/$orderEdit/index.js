@@ -315,7 +315,7 @@ class Index extends React.Component {
                                     >
                                         {getFieldDecorator('clientId', {
                                             rules: [{
-                                                required: true, message: '请输入客户名称'
+                                                required: false, message: '请输入客户名称'
                                             }],
                                         })(
                                             <Select
@@ -466,6 +466,23 @@ class Index extends React.Component {
                                             }],
                                         })(
                                             <Input/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                            </Row>
+                            <Divider>银行卡信息</Divider>
+                            <Row>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="银行卡后四位"
+                                    >
+                                        {getFieldDecorator('accountNumber', {
+                                            rules: [{
+                                                required: false, message: '请输入银行卡后四位'
+                                            }],
+                                        })(
+                                            <Input maxLength={4}/>
                                         )}
                                     </FormItem>
                                 </Col>

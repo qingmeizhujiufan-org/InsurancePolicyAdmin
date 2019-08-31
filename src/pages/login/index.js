@@ -35,7 +35,7 @@ class Index extends React.Component {
                                 <Icon type="windows" theme='filled' style={{fontSize: 90, color: '#fff'}}/>
                             </div>
                             <div
-                                style={{paddingTop: 30, textAlign: 'center', fontSize: 20, color: '#fff'}}>保险平台管理系统
+                                style={{paddingTop: 30, textAlign: 'center', fontSize: 20, color: '#fff'}}>保联汇管理系统
                             </div>
                         </Col>
                         <Col span={11} style={{height: '400px', padding: '20px 35px', backgroundColor: '#fff'}}>

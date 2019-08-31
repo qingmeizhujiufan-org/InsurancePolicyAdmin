@@ -1,12 +1,12 @@
 /* 本地环境 */
-const ADDR = 'http://localhost:7001';
+// const ADDR = 'http://localhost:7001';
 /* 开发环境 */
 // const ADDR = 'http://www.xuecheh.com';
 /* 生产环境 */
-// const ADDR = 'http://wujie.hbfolkways.com';
+const ADDR = 'http://www.baolh.top';
 
 /* 图片服务器地址 */
-const FILE_SERVER = 'http://www.xuecheh.com';
+const FILE_SERVER = 'http://www.baolh.top';
 
 module.exports = {
     ADDR,

@@ -61,7 +61,7 @@ export default {
             if (data.success) {
                 const backData = data.backData || [];
                 const content = backData.content;
-                const total = backData.length;
+                const total = backData.totalElements;
                 yield put({
                     type: 'setState',
                     payload: {
@@ -86,7 +86,7 @@ export default {
             if (data.success) {
                 const backData = data.backData || [];
                 const content = backData.content;
-                const total = backData.length;
+                const total = backData.totalElements;
                 yield put({
                     type: 'setState',
                     payload: {
